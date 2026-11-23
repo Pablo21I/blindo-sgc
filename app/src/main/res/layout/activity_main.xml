@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/industrial_bg"
+    tools:context=".ui.main.MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
+
+        <!-- Header Minimalista en 1 sola línea limpia -->
+        <LinearLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="10dp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/ic_logo_blindo_svg"
+                android:contentDescription="Logo Blindo"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/tvHeaderTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hola, Supervisor"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/industrial_text_primary" />
+
+                <TextView
+                    android:id="@+id/tvHeaderSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supervisión de piso en vivo"
+                    android:textSize="12sp"
+                    android:textColor="@color/industrial_text_secondary" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnLogout"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_logout"
+                android:background="@drawable/bg_pill_accent"
+                android:backgroundTint="@color/industrial_card"
+                app:tint="@color/industrial_text_secondary"
+                android:contentDescription="Cerrar Sesión"/>
+        </LinearLayout>
+
+        <!-- PESTAÑA 1: TALLER -->
+        <LinearLayout
+            android:id="@+id/layoutTabTaller"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Tarjeta Unificada: Estado del Piso + 3 KPIs -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardHeroBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="4dp"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/status_green"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_hero_banner"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:id="@+id/viewHeroPulse"
+                            android:layout_width="11dp"
+                            android:layout_height="11dp"
+                            android:background="@drawable/circle_green" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp">
+
+                            <TextView
+                                android:id="@+id/tvHeroTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Piso blindado y despejado"
+                                android:textColor="@color/status_green"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvHeroSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sin riesgos activos ni choques detectados"
+                                android:textColor="@color/industrial_text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="@color/industrial_divider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <TextView
+                                android:id="@+id/tvActivosKpi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="21sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/status_green"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Activas"
+                                android:textSize="11sp"
+                                android:textColor="@color/industrial_text_secondary"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="26dp"
+                            android:background="@color/industrial_divider"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <TextView
+                                android:id="@+id/tvAlertasKpi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="21sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/status_yellow"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Precaución"
+                                android:textSize="11sp"
+                                android:textColor="@color/industrial_text_secondary"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="26dp"
+                            android:background="@color/industrial_divider"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <TextView
+                                android:id="@+id/tvBloqueosKpi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="21sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/status_red"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bloqueos"
+                                android:textSize="11sp"
+                                android:textColor="@color/industrial_text_secondary"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Fila limpia: Título + Acción compacta (nunca tapa tarjetas) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Órdenes en curso"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNuevaValidacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:minWidth="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="14dp"
+                    android:text="Validar"
+                    android:textAllCaps="false"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/industrial_accent"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_shield_check"
+                    app:iconSize="16dp"
+                    app:iconTint="@color/white"
+                    app:iconPadding="6dp"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/scrollChips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingHorizontal="20dp"
+                android:layout_marginTop="6dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupZonas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"/>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOrdenes"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:layoutAnimation="@anim/layout_anim_slide_up"
+                tools:listitem="@layout/item_orden_activa"/>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:src="@drawable/ic_check_circle"
+                    app:tint="@color/status_green"
+                    android:alpha="0.9"
+                    android:contentDescription="Despejado"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sin órdenes activas"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="14dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pulsa Validar para iniciar una nueva autorización en piso."
+                    android:textAlignment="center"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PESTAÑA 2: PERSONAL SGC -->
+        <LinearLayout
+            android:id="@+id/layoutTabPersonal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Buscador + Botón compacto en la misma fila -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Blindo.SearchInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/industrial_text_secondary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etBuscarPersonalTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Buscar personal..."
+                        android:singleLine="true"
+                        android:textColor="@color/industrial_text_primary"
+                        android:textColorHint="@color/industrial_text_muted" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAbrirRegistroPersonalModal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="46dp"
+                    android:minWidth="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingHorizontal="14dp"
+                    android:text="Nuevo"
+                    android:textAllCaps="false"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/industrial_accent"
+                    app:cornerRadius="14dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/white"
+                    app:iconPadding="4dp"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPersonalTab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:layoutAnimation="@anim/layout_anim_slide_up"
+                tools:listitem="@layout/item_personal"/>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyPersonal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_nav_personal"
+                    app:tint="@color/industrial_text_muted"
+                    android:contentDescription="Sin personal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sin personal registrado"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pulsa Nuevo para dar de alta operadores y supervisores."
+                    android:textAlignment="center"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PESTAÑA 3: INVENTARIO EPP -->
+        <LinearLayout
+            android:id="@+id/layoutTabEpp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Buscador + Botón compacto en la misma fila -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Blindo.SearchInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/industrial_text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etBuscarInventario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Buscar trabajador o EPP..."
+                        android:singleLine="true"
+                        android:textColor="@color/industrial_text_primary"
+                        android:textColorHint="@color/industrial_text_muted" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAbrirAsignarEppModal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="46dp"
+                    android:minWidth="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingHorizontal="14dp"
+                    android:text="Entregar"
+                    android:textAllCaps="false"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/industrial_accent"
+                    app:cornerRadius="14dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/white"
+                    app:iconPadding="4dp"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingHorizontal="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupEstadoEpp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEppTodos"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        android:text="Todos"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEppCaducados"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_red_bg"
+                        android:textColor="@color/status_red"
+                        android:text="Caducados"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEppAlerta"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_yellow_bg"
+                        android:textColor="@color/status_yellow"
+                        android:text="Por vencer"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipEppVigentes"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_green_bg"
+                        android:textColor="@color/status_green"
+                        android:text="Vigentes"/>
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvInventarioEpp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:layoutAnimation="@anim/layout_anim_slide_up"
+                tools:listitem="@layout/item_caducidad_epp"/>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyEpp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_nav_epp"
+                    app:tint="@color/industrial_text_muted"
+                    android:contentDescription="Sin EPP"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sin equipos asignados"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pulsa Entregar para registrar equipos y controlar caducidades."
+                    android:textAlignment="center"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PESTAÑA 4: BITÁCORA SGC -->
+        <LinearLayout
+            android:id="@+id/layoutTabBitacora"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Blindo.SearchInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:startIconDrawable="@drawable/ic_search"
+                app:startIconTint="@color/industrial_text_secondary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBuscarBitacora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Buscar operador, tarea o supervisor"
+                    android:singleLine="true"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textColorHint="@color/industrial_text_muted" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupEstadoBitacora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBitacoraTodos"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        android:text="Todos"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBitacoraRojo"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_red_bg"
+                        android:textColor="@color/status_red"
+                        android:text="Bloqueados"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBitacoraAmarillo"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_yellow_bg"
+                        android:textColor="@color/status_yellow"
+                        android:text="Precaución"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBitacoraVerde"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:chipBackgroundColor="@color/status_green_bg"
+                        android:textColor="@color/status_green"
+                        android:text="Autorizados"/>
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBitacoraTab"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:layoutAnimation="@anim/layout_anim_slide_up"
+                tools:listitem="@layout/item_historial"/>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyBitacora"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_nav_bitacora"
+                    app:tint="@color/industrial_text_muted"
+                    android:contentDescription="Sin bitácora"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bitácora vacía"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cada validación registrada quedará documentada aquí con firma histórica."
+                    android:textAlignment="center"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginTop="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Barra de Navegación Inferior simétrica (4 pestañas sin huecos) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/industrial_border" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:background="@color/industrial_card"
+            app:elevation="0dp"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/nav_item_color_selector"
+            app:itemTextColor="@color/nav_item_color_selector"
+            app:itemActiveIndicatorStyle="@style/Blindo.NavIndicator"
+            app:labelVisibilityMode="labeled" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

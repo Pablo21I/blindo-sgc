@@ -1,0 +1,31 @@
+# Android / Gradle
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.aab
+
+# Laravel Backend
+backend-laravel/vendor/
+backend-laravel/node_modules/
+backend-laravel/.env
+backend-laravel/.env.backup
+backend-laravel/.phpunit.result.cache
+backend-laravel/storage/logs/*.log
+backend-laravel/storage/framework/cache/data/*
+backend-laravel/storage/framework/sessions/*
+backend-laravel/storage/framework/views/*.php
+backend-laravel/bootstrap/cache/*.php

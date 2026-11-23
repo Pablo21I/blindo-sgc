@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <!-- Reducimos la escala al 65% para que encaje perfecto en la 'Safe Zone' del ícono adaptativo -->
+    <group android:pivotX="256" android:pivotY="256" android:scaleX="0.65" android:scaleY="0.65">
+        <path
+            android:pathData="M256,72L408,128V248C408,354 342,428 256,456C170,428 104,354 104,248V128L256,72Z"
+            android:strokeLineJoin="round"
+            android:strokeWidth="18"
+            android:fillColor="#1E293B"
+            android:strokeColor="#10B981"/>
+        <path
+            android:pathData="M168,244C168,190 206,148 256,148C306,148 344,190 344,244H168Z"
+            android:fillColor="#F8FAFC"/>
+        <path
+            android:pathData="M248,140h16a8,8 0,0 1,8 8v39a8,8 0,0 1,-8 8h-16a8,8 0,0 1,-8 -8v-39a8,8 0,0 1,8 -8z"
+            android:fillColor="#10B981"/>
+        <path
+            android:pathData="M163,254h186a11,11 0,0 1,11 11v0a11,11 0,0 1,-11 11h-186a11,11 0,0 1,-11 -11v0a11,11 0,0 1,11 -11z"
+            android:fillColor="#10B981"/>
+        <path
+            android:pathData="M222,332L246,356L298,304"
+            android:strokeLineJoin="round"
+            android:strokeWidth="20"
+            android:fillColor="#00000000"
+            android:strokeColor="#F8FAFC"
+            android:strokeLineCap="round"/>
+        <path
+            android:pathData="M212,390a10,10 0,1 0,0 20a10,10 0,1 0,0 -20z"
+            android:fillColor="#22C55E"/>
+        <path
+            android:pathData="M256,390a10,10 0,1 0,0 20a10,10 0,1 0,0 -20z"
+            android:fillColor="#F59E0B"/>
+        <path
+            android:pathData="M300,390a10,10 0,1 0,0 20a10,10 0,1 0,0 -20z"
+            android:fillColor="#EF4444"/>
+    </group>
+</vector>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    app:cardBackgroundColor="@color/industrial_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/industrial_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/viewEstadoBitacoraStripe"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/status_green"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvFechaHora"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:textColor="@color/industrial_text_muted"
+                    tools:text="19/11/2026 · 10:35 AM"/>
+
+                <TextView
+                    android:id="@+id/tvBadgeEvidencia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:text="Con foto"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="@color/industrial_accent_glow"
+                    android:background="@drawable/bg_pill_accent"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvResultadoTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="@color/status_green"
+                    android:background="@drawable/bg_pill_green"
+                    tools:text="Autorizado"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTrabajo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/industrial_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Soldadura con arco eléctrico"/>
+
+            <TextView
+                android:id="@+id/tvOperadorZona"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/industrial_text_secondary"
+                android:textSize="12sp"
+                tools:text="Carlos Méndez · Zona A"/>
+
+            <TextView
+                android:id="@+id/tvMotivo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/industrial_text_secondary"
+                android:textSize="12sp"
+                android:lineSpacingExtra="2dp"
+                tools:text="Falta equipo obligatorio: Careta para soldar"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFotoEvidenciaBitacora"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/industrial_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp"
+                tools:visibility="visible">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="156dp">
+
+                    <ImageView
+                        android:id="@+id/ivFotoEvidenciaBitacora"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Evidencia fotográfica" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_pill_accent"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:text="Evidencia · Tocar para ampliar"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp"
+                android:background="@color/industrial_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_shield_check"
+                    app:tint="@color/industrial_accent"
+                    android:contentDescription="Firma" />
+
+                <TextView
+                    android:id="@+id/tvFirmaSupervisor"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Supervisor"
+                    android:textColor="@color/industrial_accent_glow"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVerPdfBitacora"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="Ver PDF"
+                    android:textAllCaps="false"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/industrial_accent_glow"
+                    app:strokeColor="@color/industrial_accent"
+                    app:strokeWidth="1dp"
+                    app:cornerRadius="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

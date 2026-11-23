@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="18dp"
+            android:background="#33FFFFFF" />
+
+        <TextView
+            android:id="@+id/tvDialogTrabajo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/industrial_text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Pintura con solventes inflamables" />
+
+        <TextView
+            android:id="@+id/tvDialogNormaRiesgo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:background="@drawable/bg_pill_yellow"
+            android:textColor="@color/status_yellow"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:text="NOM-005-STPS · Riesgo Alto" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="16dp"
+            android:background="@color/industrial_divider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Operador responsable"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvDialogOperador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/industrial_text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="Carlos Méndez" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Supervisor a cargo"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvDialogSupervisor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/industrial_text_primary"
+            android:textSize="14sp"
+            tools:text="Ing. Roberto Garza" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Zona"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvDialogZona"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="14sp"
+                    tools:text="Zona A" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Turno"
+                    android:textColor="@color/industrial_text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvDialogTurno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="14sp"
+                    tools:text="Matutino" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Estado SGC"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvDialogEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/status_green"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            tools:text="Autorizado y blindado" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Blindo.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Notas de supervisión">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDialogNotas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:maxLines="4"
+                android:textColor="@color/industrial_text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogGuardarNotas"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Guardar notas"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_accent_glow"
+            app:strokeColor="@color/industrial_accent"
+            app:cornerRadius="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogExportarPdf"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:text="Ver / Exportar Permiso STPS (PDF)"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/industrial_accent"
+            app:cornerRadius="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogFinalizar"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:text="Finalizar orden en piso"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/status_red"
+            app:cornerRadius="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogCerrar"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Cerrar"
+            android:textAllCaps="false"
+            android:textColor="@color/industrial_text_secondary" />
+
+    </LinearLayout>
+</ScrollView>

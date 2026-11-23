@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:background="#33FFFFFF" />
+
+    <TextView
+        android:id="@+id/tvEditEppTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gestionar EPP asignado"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/industrial_text_primary" />
+
+    <TextView
+        android:id="@+id/tvEditEppSubtitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trabajador · Equipo"
+        android:textSize="13sp"
+        android:textColor="@color/industrial_accent_glow"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="¿Tiene fecha de caducidad?"
+            android:textColor="@color/industrial_text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchEditCaducidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutEditCaducidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Blindo.TextInputLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Nueva vida útil">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEditVidaUtil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="@color/industrial_text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/spinnerEditTipoTiempo"
+            android:layout_width="124dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_spinner_modern"
+            android:paddingStart="10dp"
+            android:paddingEnd="32dp" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGuardarEdicionEpp"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="20dp"
+        android:text="Guardar nueva vigencia"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/industrial_accent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEliminarAsignacionEpp"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:text="Eliminar asignación"
+        android:textAllCaps="false"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/status_red"
+        app:strokeColor="@color/status_red"
+        app:cornerRadius="14dp" />
+
+</LinearLayout>

@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/industrial_bg"
+    tools:context=".ui.validacion.ValidacionActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/industrial_bg"
+        app:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Nueva validación"
+            app:titleTextColor="@color/industrial_text_primary"
+            app:navigationIcon="?attr/homeAsUpIndicator"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="28dp">
+
+            <!-- PASO 1: PERSONAL Y UBICACIÓN -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_step_badge"
+                            android:text="1"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="Personal y ubicación"
+                            android:textColor="@color/industrial_text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Operador -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Operador asignado"
+                            android:textColor="@color/industrial_text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/btnAgregarOperador"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+ Nuevo"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_pill_accent"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"/>
+                    </LinearLayout>
+
+                    <Spinner
+                        android:id="@+id/spinnerOperador"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_spinner_modern"
+                        android:paddingEnd="36dp"/>
+
+                    <!-- Supervisor -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Supervisor a cargo"
+                            android:textColor="@color/industrial_text_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/btnAgregarSupervisor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+ Nuevo"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_pill_accent"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"/>
+                    </LinearLayout>
+
+                    <Spinner
+                        android:id="@+id/spinnerSupervisor"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_spinner_modern"
+                        android:paddingEnd="36dp"/>
+
+                    <!-- Zona y Turno -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="14dp"
+                        android:baselineAligned="false">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="6dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:text="Zona"
+                                    android:textColor="@color/industrial_text_secondary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/btnAgregarZona"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="+ Nueva"
+                                    android:textColor="@color/industrial_accent_glow"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/bg_pill_accent"
+                                    android:paddingHorizontal="8dp"
+                                    android:paddingVertical="2dp"/>
+                            </LinearLayout>
+
+                            <Spinner
+                                android:id="@+id/spinnerZona"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="6dp"
+                                android:background="@drawable/bg_spinner_modern"
+                                android:paddingEnd="32dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="6dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Turno"
+                                android:textColor="@color/industrial_text_secondary"
+                                android:textSize="12sp"
+                                android:textStyle="bold"/>
+
+                            <Spinner
+                                android:id="@+id/spinnerTurno"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="6dp"
+                                android:background="@drawable/bg_spinner_modern"
+                                android:paddingEnd="32dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- PASO 2: TRABAJO A REALIZAR -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_step_badge"
+                            android:text="2"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="Trabajo a realizar"
+                            android:textColor="@color/industrial_text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnNuevoTrabajo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+ Nueva tarea"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_pill_accent"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Desliza y toca la actividad que se ejecutará"
+                        android:textColor="@color/industrial_text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="14dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTrabajosVisual"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_trabajo_selector" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- PASO 3: INSPECCIÓN DE EPP -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_step_badge"
+                            android:text="3"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="Inspección de EPP"
+                            android:textColor="@color/industrial_text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnMarcarObligatorios"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Marcar todos"
+                            android:textColor="@color/industrial_accent_glow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_pill_accent"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Confirma el equipo portado (NOM-017)"
+                            android:textColor="@color/industrial_text_secondary"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/tvContadorEpp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 obligatorios"
+                            android:textColor="@color/status_yellow"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvEpp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/item_epp_checkbox"
+                        tools:itemCount="3"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSwitchPokaYoke"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:cardBackgroundColor="@color/industrial_surface_input"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/status_yellow"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switchEppEstado"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="EPP en buen estado físico"
+                                android:textColor="@color/industrial_text_primary"
+                                android:textStyle="bold"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:id="@+id/tvEstadoPokaYokeDetalle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Requerido: confirma que el equipo no presenta daños ni desgaste crítico."
+                                android:textColor="@color/status_yellow"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Evidencia Fotográfica en Sitio (Cámara o Galería) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:cardBackgroundColor="@color/industrial_surface_input"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/industrial_border"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Evidencia fotográfica"
+                                        android:textColor="@color/industrial_text_primary"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:id="@+id/tvEstadoEvidencia"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Se incrusta en el Permiso PDF STPS"
+                                        android:textColor="@color/industrial_text_secondary"
+                                        android:textSize="11sp"/>
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/btnQuitarFoto"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone"
+                                    android:text="Quitar"
+                                    android:textColor="@color/status_red"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:paddingHorizontal="8dp"
+                                    android:paddingVertical="4dp"/>
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/ivPreviewEvidencia"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:layout_marginTop="10dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"
+                                android:contentDescription="Vista previa de evidencia fotográfica"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="10dp">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnTomarFoto"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="44dp"
+                                    android:layout_marginEnd="6dp"
+                                    android:text="Tomar foto"
+                                    android:textAllCaps="false"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/industrial_accent_glow"
+                                    app:strokeColor="@color/industrial_accent"
+                                    app:cornerRadius="12dp"/>
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnElegirGaleria"
+                                    style="@style/Widget.Material3.Button.OutlinedButton"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="44dp"
+                                    android:layout_marginStart="6dp"
+                                    android:text="Galería"
+                                    android:textAllCaps="false"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/industrial_text_primary"
+                                    app:strokeColor="@color/industrial_border"
+                                    app:cornerRadius="12dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Footer fijo -->
+    <LinearLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp"
+        android:background="@color/industrial_bg"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnValidar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Validar seguridad"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/industrial_accent"
+            app:icon="@drawable/ic_shield_check"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

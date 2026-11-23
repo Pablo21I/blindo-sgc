@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="18dp"
+            android:background="#33FFFFFF" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nuevo trabajo SGC"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_text_primary"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Blindo.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de la tarea (Ej. Oxicorte)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombreTrabajo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/industrial_text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Blindo.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Norma aplicable (Ej. NOM-027-STPS)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNorma"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/industrial_text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nivel de riesgo"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerRiesgo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_spinner_modern"
+            android:paddingEnd="36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peligro SIMOPS (choques en zona)"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="6dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCategoriaSimops"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_spinner_modern"
+            android:paddingEnd="36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EPP obligatorio requerido"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Blindo.SearchInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/industrial_text_secondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBuscarEpp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Filtrar equipo..."
+                android:textColor="@color/industrial_text_primary"
+                android:textColorHint="@color/industrial_text_muted" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:fadeScrollbars="false"
+            android:background="@drawable/bg_job_card_unselected"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/layoutCheckboxesEpp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarTrabajo"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:text="Agregar al catálogo"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/industrial_accent"/>
+
+    </LinearLayout>
+</ScrollView>

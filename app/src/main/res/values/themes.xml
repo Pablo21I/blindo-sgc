@@ -1,0 +1,77 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.Blindo" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/industrial_accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/industrial_accent_soft</item>
+        <item name="colorOnPrimaryContainer">@color/industrial_accent_glow</item>
+
+        <item name="colorSecondary">@color/industrial_accent</item>
+        <item name="colorSecondaryContainer">@color/industrial_accent_soft</item>
+        <item name="colorOnSecondaryContainer">@color/industrial_accent_glow</item>
+
+        <item name="colorTertiaryContainer">@color/industrial_card_elevated</item>
+        <item name="colorOnTertiaryContainer">@color/white</item>
+
+        <item name="android:colorBackground">@color/industrial_bg</item>
+        <item name="colorSurface">@color/industrial_card</item>
+        <item name="colorSurfaceVariant">@color/industrial_card_elevated</item>
+        <item name="colorOnSurface">@color/industrial_text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/industrial_text_secondary</item>
+        <item name="colorOutline">@color/industrial_border</item>
+
+        <!-- Barras del sistema integradas con el fondo -->
+        <item name="android:statusBarColor">@color/industrial_bg</item>
+        <item name="android:navigationBarColor">@color/industrial_card</item>
+    </style>
+
+    <style name="Theme.Blindo" parent="Base.Theme.Blindo" />
+
+    <!-- Splash Screen -->
+    <style name="Theme.Blindo.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/industrial_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_branding</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.Blindo</item>
+    </style>
+
+    <!-- Indicador Pill moderno para BottomNavigationView -->
+    <style name="Blindo.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#220EA5E9</item>
+        <item name="android:width">60dp</item>
+        <item name="android:height">32dp</item>
+    </style>
+
+    <!-- Input limpio con esquinas 14dp y fondo sutil -->
+    <style name="Blindo.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/industrial_surface_input</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxStrokeColor">@color/industrial_accent</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1.5dp</item>
+        <item name="hintTextColor">@color/industrial_accent_glow</item>
+    </style>
+
+    <!-- Buscador tipo Pill (24dp) -->
+    <style name="Blindo.SearchInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxBackgroundColor">@color/industrial_card</item>
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">24dp</item>
+        <item name="boxCornerRadiusBottomEnd">24dp</item>
+        <item name="boxStrokeColor">@color/industrial_border</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1.5dp</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <!-- Botón segmentado con estado activo claro -->
+    <style name="Blindo.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/toggle_btn_bg_selector</item>
+        <item name="strokeColor">@color/toggle_btn_stroke_selector</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+</resources>

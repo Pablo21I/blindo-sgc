@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/industrial_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/industrial_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/ivEstatusEpp"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/status_green" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/tvEquipoAsignado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/industrial_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Botas dieléctricas · 1 año" />
+
+            <TextView
+                android:id="@+id/tvNombreEmpleado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/industrial_text_secondary"
+                android:textSize="12sp"
+                tools:text="Carlos Méndez López (OP-201)" />
+
+            <TextView
+                android:id="@+id/tvDiasRestantes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/bg_pill_green"
+                android:textColor="@color/status_green"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="Vigente · 10 meses restantes" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRenovarEpp"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:minWidth="0dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="14dp"
+            android:text="Renovar"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/industrial_accent_glow"
+            app:strokeColor="@color/industrial_accent"
+            app:cornerRadius="10dp"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

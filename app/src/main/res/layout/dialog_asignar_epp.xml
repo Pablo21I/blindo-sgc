@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:background="#33FFFFFF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entregar equipo EPP"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:textColor="@color/industrial_text_primary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registra una entrega individual y define su vigencia según fabricante."
+        android:textSize="13sp"
+        android:textColor="@color/industrial_text_secondary"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trabajador"
+        android:textColor="@color/industrial_text_secondary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="6dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerTrabajadorAsignar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_spinner_modern"
+        android:paddingStart="12dp"
+        android:paddingEnd="36dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Equipo de protección"
+        android:textColor="@color/industrial_text_secondary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerEppAsignar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_spinner_modern"
+        android:paddingStart="12dp"
+        android:paddingEnd="36dp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardVidaUtil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        app:cardBackgroundColor="@color/industrial_surface_input"
+        app:strokeColor="@color/industrial_border"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvSugerenciaNorma"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sugerencia STPS base: 12 meses. Ajústalo según la marca."
+                android:textColor="@color/industrial_accent_glow"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="¿Tiene fecha de caducidad?"
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchTieneCaducidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutOpcionesCaducidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Blindo.TextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Duración">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etVidaUtilPersonalizada"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="12"
+                        android:textColor="@color/industrial_text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spinnerTipoTiempo"
+                    android:layout_width="124dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/bg_spinner_modern"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="32dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmarAsignacionEpp"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:text="Registrar entrega"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/industrial_accent"/>
+
+</LinearLayout>

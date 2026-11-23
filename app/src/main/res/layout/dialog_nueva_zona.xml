@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:background="#33FFFFFF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nueva zona de trabajo"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:textColor="@color/industrial_text_primary"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Blindo.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre (Ej. Zona D - Calderas)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNombreZona"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/industrial_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGuardarZona"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:text="Agregar zona"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/industrial_accent"/>
+
+</LinearLayout>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/industrial_bg"
+    tools:context=".ui.login.LoginActivity">
+
+    <!-- Halo ambiental suave detrás del logo -->
+    <View
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_marginTop="-40dp"
+        android:background="@drawable/bg_login_glow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvFooterLogin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="36dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_logo_blindo_svg"
+                android:contentDescription="Logo Blindo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Blindo"
+                android:textColor="@color/industrial_text_primary"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.01"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="28dp"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="5dp"
+                android:background="@drawable/bg_pill_accent"
+                android:text="SGC · Seguridad Industrial"
+                android:textColor="@color/industrial_accent_glow"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <!-- Banner guía solo en primer inicio -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPrimerInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/industrial_accent_soft"
+                app:strokeColor="@color/industrial_accent"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:text="Primer inicio: crea tu cuenta de Supervisor o Administrador para comenzar."
+                    android:textColor="@color/industrial_text_primary"
+                    android:textSize="13sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:cardCornerRadius="24dp"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Iniciar sesión"
+                        android:textColor="@color/industrial_text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="Ingresa tus credenciales de personal autorizado"
+                        android:textColor="@color/industrial_text_secondary"
+                        android:textSize="13sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilUsuario"
+                        style="@style/Blindo.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="No. de Empleado (Ej. SUP-001)"
+                        app:startIconDrawable="@drawable/ic_user_avatar"
+                        app:startIconTint="@color/industrial_text_secondary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etUsuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textColor="@color/industrial_text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilPassword"
+                        style="@style/Blindo.TextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:hint="Contraseña / PIN"
+                        app:startIconDrawable="@drawable/ic_shield_check"
+                        app:startIconTint="@color/industrial_text_secondary"
+                        app:endIconMode="password_toggle">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            android:textColor="@color/industrial_text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="Entrar al sistema"
+                            android:textAllCaps="false"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            app:cornerRadius="14dp"
+                            app:backgroundTint="@color/industrial_accent" />
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressLogin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:visibility="gone"
+                            app:indicatorColor="@color/white"
+                            app:trackThickness="3dp"
+                            app:indicatorSize="24dp"/>
+                    </FrameLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAbrirRegistroCuenta"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:text="¿Sin cuenta? Crear acceso nuevo"
+                        android:textAllCaps="false"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/industrial_accent_glow"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvFooterLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Normativa STPS · NOM-017 · Acceso Controlado"
+        android:textColor="@color/industrial_text_muted"
+        android:textSize="11sp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

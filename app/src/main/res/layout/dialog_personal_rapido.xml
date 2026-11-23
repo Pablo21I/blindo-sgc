@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:background="#33FFFFFF" />
+
+    <TextView
+        android:id="@+id/tvTituloPersonalModal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar personal"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:textColor="@color/industrial_text_primary" />
+
+    <TextView
+        android:id="@+id/tvSubtituloPersonalModal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Captura o actualiza los datos del integrante."
+        android:textSize="13sp"
+        android:textColor="@color/industrial_text_secondary"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="18dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Blindo.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre completo">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNombrePersonalModal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/industrial_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Blindo.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="No. de Empleado (Ej. OP-201)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNumEmpleadoModal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/industrial_text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rol en taller"
+        android:textColor="@color/industrial_text_secondary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleRolPersonalModal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:checkedButton="@id/btnRolOpModal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRolOpModal"
+            style="@style/Blindo.ToggleButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="46dp"
+            android:text="Operador"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRolSupModal"
+            style="@style/Blindo.ToggleButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="46dp"
+            android:text="Supervisor"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGuardarPersonalModal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:text="Guardar cambios"
+        android:textAllCaps="false"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/industrial_accent" />
+
+</LinearLayout>

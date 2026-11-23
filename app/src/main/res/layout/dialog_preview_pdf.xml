@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bg_bottom_sheet">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="14dp"
+        android:background="#33FFFFFF" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPdfDialogTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Permiso de Trabajo STPS"
+                android:textColor="@color/industrial_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPdfFolioSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Documento PDF generado"
+                android:textColor="@color/industrial_text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCerrarPdfPreview"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cerrar"
+            android:textAllCaps="false"
+            android:textColor="@color/industrial_text_secondary" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="440dp"
+        android:background="@color/industrial_bg"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/ivPdfPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:contentDescription="Vista previa del Permiso STPS en PDF" />
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCompartirPdf"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="14dp"
+        android:text="Compartir / Guardar PDF"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:cornerRadius="14dp"
+        app:backgroundTint="@color/industrial_accent" />
+
+</LinearLayout>

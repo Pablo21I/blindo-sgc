@@ -1,0 +1,250 @@
+openapi: 3.0.0
+info:
+  title: Blindo SGC - API Documentation
+  description: "Especificación de los Endpoints RESTful para la integración de la app móvil Blindo con el Backend en Laravel (InfinityFree). Esta API gestionará la persistencia remota de los catálogos SGC, inventarios y auditorías en piso."
+  version: "1.0.0"
+servers:
+  - url: "https://[tu-sitio].infinityfreeapp.com/api"
+    description: "Servidor de Producción (Laravel)"
+
+components:
+  securitySchemes:
+    SanctumAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Token de autenticación emitido por Laravel Sanctum al hacer Login."
+
+# ---------------------------------------------------------
+# ENDPOINTS
+# ---------------------------------------------------------
+paths:
+  # === MÓDULO DE AUTENTICACIÓN ===
+  /login:
+    post:
+      summary: "Iniciar Sesión SGC"
+      description: "Recibe número de empleado y PIN, devuelve un Token Sanctum para autorizar las siguientes peticiones."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                numero_empleado:
+                  type: string
+                  example: "SUP-0001"
+                pin:
+                  type: string
+                  example: "1234"
+      responses:
+        '200':
+          description: "Login Exitoso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      nombre:
+                        type: string
+                      rol:
+                        type: string
+        '401':
+          description: "Credenciales Incorrectas"
+
+  # === MÓDULO DE PERSONAL ===
+  /personal:
+    get:
+      summary: "Obtener Plantilla Activa"
+      security:
+        - SanctumAuth: []
+      responses:
+        '200':
+          description: "Lista de operadores y supervisores"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Personal'
+    post:
+      summary: "Registrar Nuevo Trabajador"
+      security:
+        - SanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Personal'
+      responses:
+        '201':
+          description: "Personal Registrado"
+
+  # === MÓDULO DE CATÁLOGOS SGC ===
+  /zonas:
+    get:
+      summary: "Listar Zonas del Taller"
+      security:
+        - SanctumAuth: []
+    post:
+      summary: "Registrar Nueva Zona"
+      security:
+        - SanctumAuth: []
+
+  /trabajos:
+    get:
+      summary: "Listar Trabajos y sus Reglas EPP"
+      description: "Retorna los trabajos con su array JSON de EPPs obligatorios."
+      security:
+        - SanctumAuth: []
+    post:
+      summary: "Crear Nuevo Trabajo"
+      security:
+        - SanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                norma:
+                  type: string
+                riesgo:
+                  type: string
+                epps_obligatorios:
+                  type: array
+                  items:
+                    type: integer
+
+  # === MÓDULO DE INVENTARIO EPP ===
+  /inventario-epp:
+    get:
+      summary: "Consultar EPP Asignado (Todas las caducidades)"
+      security:
+        - SanctumAuth: []
+    post:
+      summary: "Asignar Equipo a Trabajador"
+      security:
+        - SanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsignacionEpp'
+    put:
+      summary: "Renovar Equipo"
+      description: "Sustituye la asignación anterior por una nueva con la fecha de hoy."
+      security:
+        - SanctumAuth: []
+
+  # === MÓDULO POKA-YOKE (ÓRDENES Y BITÁCORA) ===
+  /ordenes-activas:
+    get:
+      summary: "Consultar Órdenes Simultáneas (Para validar SIMOPS)"
+      security:
+        - SanctumAuth: []
+    post:
+      summary: "Registrar Orden Autorizada"
+      security:
+        - SanctumAuth: []
+    delete:
+      summary: "Finalizar Orden (Retirar de Piso)"
+      description: "Ruta: /ordenes-activas/{id}"
+      security:
+        - SanctumAuth: []
+
+  /bitacora:
+    get:
+      summary: "Historial de Auditorías SGC"
+      security:
+        - SanctumAuth: []
+    post:
+      summary: "Grabar Suceso (Aprobación o Bloqueo)"
+      security:
+        - SanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroAuditoria'
+
+# ---------------------------------------------------------
+# MODELOS DE DATOS (ESQUEMAS)
+# (Se adjuntan al nodo components superior)
+# ---------------------------------------------------------
+  schemas:
+    Personal:
+      type: object
+      properties:
+        nombre:
+          type: string
+        numero_empleado:
+          type: string
+        rol:
+          type: string
+          enum: [OPERADOR, SUPERVISOR]
+
+    AsignacionEpp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        personal_id:
+          type: integer
+        epp_id:
+          type: integer
+        fecha_entrega_millis:
+          type: integer
+          format: int64
+        vida_util_meses:
+          type: integer
+
+    RegistroAuditoria:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fecha_hora_millis:
+          type: integer
+          format: int64
+        trabajador:
+          type: string
+        zona:
+          type: string
+        trabajo:
+          type: string
+        resultado:
+          type: string
+        motivo:
+          type: string
+
+    Trabajo:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        norma:
+          type: string
+        riesgo:
+          type: string
+        epps_obligatorios:
+          type: array
+          items:
+            type: integer

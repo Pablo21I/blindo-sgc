@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_taller"
+        android:icon="@drawable/ic_nav_taller"
+        android:title="Taller" />
+    <item
+        android:id="@+id/nav_personal"
+        android:icon="@drawable/ic_nav_personal"
+        android:title="Personal" />
+    <item
+        android:id="@+id/nav_epp"
+        android:icon="@drawable/ic_nav_epp"
+        android:title="EPP" />
+    <item
+        android:id="@+id/nav_bitacora"
+        android:icon="@drawable/ic_nav_bitacora"
+        android:title="Bitácora" />
+</menu>

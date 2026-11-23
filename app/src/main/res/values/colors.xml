@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Sistema de Superficies: Deep Slate Ejecutivo -->
+    <color name="industrial_bg">#070B14</color>
+    <color name="industrial_surface_input">#121A2B</color>
+    <color name="industrial_card">#101726</color>
+    <color name="industrial_card_elevated">#182338</color>
+    <color name="industrial_border">#22304A</color>
+    <color name="industrial_divider">#1B263C</color>
+
+    <!-- Jerarquía Tipográfica -->
+    <color name="industrial_text_primary">#F8FAFC</color>
+    <color name="industrial_text_secondary">#94A3B8</color>
+    <color name="industrial_text_muted">#64748B</color>
+
+    <!-- Acento de Marca -->
+    <color name="industrial_accent">#0EA5E9</color>
+    <color name="industrial_accent_glow">#38BDF8</color>
+    <color name="industrial_accent_dark">#0369A1</color>
+    <color name="industrial_accent_soft">#1E0EA5E9</color>
+
+    <!-- Acento Secundario -->
+    <color name="industrial_orange">#FB923C</color>
+    <color name="industrial_orange_bg">#22FB923C</color>
+
+    <!-- Semáforo de Seguridad SGC -->
+    <color name="status_green">#10B981</color>
+    <color name="status_yellow">#F59E0B</color>
+    <color name="status_red">#F43F5E</color>
+
+    <!-- Fondos Translúcidos de Semáforo -->
+    <color name="status_green_bg">#1F10B981</color>
+    <color name="status_yellow_bg">#1FF59E0B</color>
+    <color name="status_red_bg">#1FF43F5E</color>
+
+    <color name="status_green_dark">#065F46</color>
+    <color name="status_yellow_dark">#78350F</color>
+    <color name="status_red_dark">#881337</color>
+</resources>

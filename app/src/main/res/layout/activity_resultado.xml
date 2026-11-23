@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_resultado_green"
+    tools:context=".ui.resultado.ResultadoSemaforoActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomButtonsLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="40dp"
+            android:paddingBottom="24dp">
+
+            <!-- Emblema circular con fondo translúcido -->
+            <FrameLayout
+                android:id="@+id/frameIconBadge"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_pill_green">
+
+                <ImageView
+                    android:id="@+id/ivIcono"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check_circle"
+                    android:contentDescription="Resultado"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="Autorizado y blindado"/>
+
+            <!-- Tarjeta de Diagnóstico (lo más importante primero) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDiagnostico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="#18FFFFFF"
+                app:strokeColor="#33FFFFFF"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="DIAGNÓSTICO SGC"
+                        android:textColor="#B3FFFFFF"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvMensaje"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="3dp"
+                        tools:text="Todas las validaciones pasadas correctamente."/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ficha Resumen -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFichaResumen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardBackgroundColor="@color/industrial_card"
+                app:strokeColor="@color/industrial_border"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvResumenTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/industrial_text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        tools:text="Soldadura con arco eléctrico" />
+
+                    <TextView
+                        android:id="@+id/tvResumenNorma"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="3dp"
+                        android:background="@drawable/bg_pill_accent"
+                        android:textColor="@color/industrial_accent_glow"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        tools:text="NOM-027-STPS · Riesgo Alto" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="12dp"
+                        android:background="@color/industrial_divider"/>
+
+                    <TextView
+                        android:id="@+id/tvResumenOperador"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/industrial_text_primary"
+                        android:textSize="13sp"
+                        tools:text="Operador: Carlos Méndez (OP-201)" />
+
+                    <TextView
+                        android:id="@+id/tvResumenSupervisor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/industrial_text_secondary"
+                        android:textSize="13sp"
+                        tools:text="Supervisor: Ing. Roberto Garza (SUP-101)" />
+
+                    <TextView
+                        android:id="@+id/tvResumenUbicacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/industrial_text_secondary"
+                        android:textSize="13sp"
+                        tools:text="Ubicación: Zona A · Matutino" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAccionPrimaria"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/status_green"
+            app:cornerRadius="14dp"
+            tools:text="Iniciar orden en piso"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnExportarPdf"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="Ver / Exportar Permiso STPS (PDF)"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_accent_glow"
+            app:strokeColor="@color/industrial_accent"
+            app:cornerRadius="14dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAccionSecundaria"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:text="Volver y corregir"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:strokeColor="#40FFFFFF"
+            app:cornerRadius="14dp"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
