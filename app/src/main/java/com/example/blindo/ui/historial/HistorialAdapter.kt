@@ -15,6 +15,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Adaptador de la lista de Bitácora: muestra cada validación registrada,
+ * su foto de evidencia (si tiene) y el botón para abrir el Permiso STPS en PDF.
+ */
 class HistorialAdapter(
     private var registros: List<RegistroAuditoria>,
     private val onVerPdfClick: (RegistroAuditoria) -> Unit,

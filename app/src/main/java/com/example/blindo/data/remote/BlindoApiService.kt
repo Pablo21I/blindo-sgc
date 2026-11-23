@@ -9,6 +9,9 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/**
+ * Lista de todas las rutas (endpoints) de nuestra API en Laravel que consume la app con Retrofit.
+ */
 interface BlindoApiService {
 
     // Autenticación Laravel Sanctum

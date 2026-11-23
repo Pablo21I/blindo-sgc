@@ -6,8 +6,13 @@ use App\Models\Personal;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controlador CRUD para la tabla personals (Operadores y Supervisores).
+ * Todas las rutas requieren token válido de Sanctum.
+ */
 class PersonalController extends Controller
 {
+    // Lista todo el personal activo ordenado del más reciente al más antiguo (GET /api/personal)
     public function index()
     {
         $lista = Personal::where('activo', true)
@@ -17,8 +22,14 @@ class PersonalController extends Controller
         return response()->json($lista, 200);
     }
 
+    // Crea un nuevo operador o supervisor validando campos obligatorios y duplicados (POST /api/personal)
     public function store(Request $request)
     {
+        // Normalizamos el número de empleado antes de validar que no esté repetido
+        $request->merge([
+            'numero_empleado' => strtoupper(trim((string) $request->input('numero_empleado', ''))),
+        ]);
+
         $validated = $request->validate([
             'nombre' => 'required|string|min:3|max:120',
             'rol' => 'required|in:OPERADOR,SUPERVISOR',
@@ -42,13 +53,19 @@ class PersonalController extends Controller
         return response()->json($personal, 201);
     }
 
+    // Devuelve un trabajador específico con sus EPP asignados (GET /api/personal/{id})
     public function show(Personal $personal)
     {
         return response()->json($personal->load('asignacionEpps'), 200);
     }
 
+    // Actualiza nombre, rol o número de empleado de un trabajador (PUT /api/personal/{id})
     public function update(Request $request, Personal $personal)
     {
+        $request->merge([
+            'numero_empleado' => strtoupper(trim((string) $request->input('numero_empleado', ''))),
+        ]);
+
         $validated = $request->validate([
             'nombre' => 'required|string|min:3|max:120',
             'rol' => 'required|in:OPERADOR,SUPERVISOR',
@@ -72,6 +89,7 @@ class PersonalController extends Controller
         return response()->json($personal, 200);
     }
 
+    // Elimina al trabajador de MySQL y, por cascada, también sus asignaciones de EPP (DELETE /api/personal/{id})
     public function destroy(Personal $personal)
     {
         $personal->delete();

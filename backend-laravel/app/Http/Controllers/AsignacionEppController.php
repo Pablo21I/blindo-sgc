@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\AsignacionEpp;
 use Illuminate\Http\Request;
 
+/**
+ * Controlador CRUD para el inventario de Equipos de Protección Personal asignados a cada trabajador.
+ */
 class AsignacionEppController extends Controller
 {
+    // Lista todas las asignaciones de EPP junto con los datos de su trabajador (GET /api/asignaciones-epp)
     public function index()
     {
         $items = AsignacionEpp::with('personal')
@@ -17,6 +21,7 @@ class AsignacionEppController extends Controller
         return response()->json($items, 200);
     }
 
+    // Entrega un EPP al trabajador; si ya tenía ese mismo equipo, actualiza su fecha y vigencia (POST /api/asignaciones-epp)
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -64,6 +69,7 @@ class AsignacionEppController extends Controller
         ], 201);
     }
 
+    // Edita la vida útil en meses o renueva la fecha de entrega a hoy (PUT /api/asignaciones-epp/{id})
     public function update(Request $request, AsignacionEpp $asignacionEpp)
     {
         $validated = $request->validate([
@@ -83,6 +89,7 @@ class AsignacionEppController extends Controller
         return response()->json($this->formatItem($asignacionEpp), 200);
     }
 
+    // Elimina una asignación de EPP del inventario (DELETE /api/asignaciones-epp/{id})
     public function destroy(AsignacionEpp $asignacionEpp)
     {
         $asignacionEpp->delete();

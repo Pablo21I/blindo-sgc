@@ -24,6 +24,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla para gestionar la plantilla de trabajadores (Operadores y Supervisores).
+ * Permite crear (POST), listar (GET), editar (PUT) y eliminar (DELETE) directo en Laravel/MySQL.
+ */
 class RegistroPersonalActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistroPersonalBinding
@@ -31,6 +35,8 @@ class RegistroPersonalActivity : AppCompatActivity() {
 
     private var rolFiltroSeleccionado: String = "Todos"
     private var busquedaTexto: String = ""
+    // Caché en memoria para filtrar al escribir sin saturar al servidor con peticiones por cada letra
+    private var cachePersonal: List<Personal> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,12 +66,13 @@ class RegistroPersonalActivity : AppCompatActivity() {
         actualizarLista()
     }
 
+    // Configura la barra de búsqueda y los filtros de rol (filtran en memoria al instante)
     private fun setupFiltrosYBusqueda() {
         binding.etBuscarPersonal.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 busquedaTexto = s?.toString()?.trim()?.lowercase() ?: ""
-                actualizarLista()
+                aplicarFiltroLocal()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -78,32 +85,39 @@ class RegistroPersonalActivity : AppCompatActivity() {
                     binding.chipSupervisores.id -> "SUPERVISOR"
                     else -> "Todos"
                 }
-                actualizarLista()
+                aplicarFiltroLocal()
             }
         }
     }
 
+    // Descarga la lista actualizada de personal desde Laravel (GET /api/personal)
     private fun actualizarLista() {
         lifecycleScope.launch {
             MockBlindoRepository.getPersonalResult()
                 .onSuccess { todos ->
-                    val filtrados = todos.filter { p ->
-                        val coincideRol = when (rolFiltroSeleccionado) {
-                            "OPERADOR" -> p.rol == "OPERADOR"
-                            "SUPERVISOR" -> p.rol == "SUPERVISOR"
-                            else -> true
-                        }
-                        val coincideBusqueda = busquedaTexto.isEmpty() ||
-                            p.nombre.lowercase().contains(busquedaTexto) ||
-                            p.numeroEmpleado.lowercase().contains(busquedaTexto)
-                        coincideRol && coincideBusqueda
-                    }
-                    adapter.updateData(filtrados)
+                    cachePersonal = todos
+                    aplicarFiltroLocal()
                 }
                 .onFailure { err ->
                     Snackbar.make(binding.root, err.message ?: "Error al cargar personal", Snackbar.LENGTH_LONG).show()
                 }
         }
+    }
+
+    // Filtra la lista ya descargada según el rol seleccionado y el texto de búsqueda
+    private fun aplicarFiltroLocal() {
+        val filtrados = cachePersonal.filter { p ->
+            val coincideRol = when (rolFiltroSeleccionado) {
+                "OPERADOR" -> p.rol == "OPERADOR"
+                "SUPERVISOR" -> p.rol == "SUPERVISOR"
+                else -> true
+            }
+            val coincideBusqueda = busquedaTexto.isEmpty() ||
+                p.nombre.lowercase().contains(busquedaTexto) ||
+                p.numeroEmpleado.lowercase().contains(busquedaTexto)
+            coincideRol && coincideBusqueda
+        }
+        adapter.updateData(filtrados)
     }
 
     private fun setupListeners() {
@@ -148,7 +162,7 @@ class RegistroPersonalActivity : AppCompatActivity() {
         val dialogBinding = DialogDetallePersonalBinding.inflate(layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val partes = personal.nombre.trim().split(" ")
+        val partes = personal.nombre.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
         val iniciales = if (partes.size >= 2) {
             "${partes[0].firstOrNull() ?: ""}${partes[1].firstOrNull() ?: ""}".uppercase()
         } else {

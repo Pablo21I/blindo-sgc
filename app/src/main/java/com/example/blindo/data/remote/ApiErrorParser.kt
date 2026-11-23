@@ -7,6 +7,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+// Excepción propia para guardar el código HTTP (ej. 401, 422), el mensaje amigable y los errores por campo
 class ApiException(
     val statusCode: Int,
     override val message: String,
@@ -14,11 +15,12 @@ class ApiException(
 ) : Exception(message)
 
 /**
- * Traduce códigos HTTP de Laravel (401, 422, 500) y caídas de red en mensajes amigables
- * para que la app nunca crashee si el servidor se apaga o rechaza un formulario.
+ * Convierte errores del servidor (401, 422, 500) y fallos de red en mensajes fáciles de entender
+ * para que la app nunca se cierre (crashee) si el servidor se cae o faltan datos.
  */
 object ApiErrorParser {
 
+    // Lee la respuesta de error que devolvió Laravel en JSON y extrae los mensajes por campo
     fun parseHttpError(response: Response<*>): ApiException {
         val code = response.code()
         val rawBody = try {
@@ -70,11 +72,12 @@ object ApiErrorParser {
         return ApiException(code, friendlyMessage, fieldErrors)
     }
 
+    // Traduce errores cuando no hay internet, se cayó el servidor o tardó demasiado en responder
     fun parseException(e: Throwable): ApiException {
         if (e is ApiException) return e
         val msg = when (e) {
             is ConnectException, is UnknownHostException ->
-                "No se pudo conectar con el servidor Laravel. Verifica que 'php artisan serve' esté encendido."
+                "No se pudo conectar con el servidor. Verifica tu conexión a internet o que el servidor esté encendido."
             is SocketTimeoutException ->
                 "El servidor tardó demasiado en responder. Revisa tu conexión."
             is IOException ->

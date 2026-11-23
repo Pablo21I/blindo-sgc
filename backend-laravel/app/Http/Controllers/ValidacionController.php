@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Validacion;
 use Illuminate\Http\Request;
 
+/**
+ * Controlador CRUD para la tabla validaciones, que guarda tanto las órdenes activas en piso (activa=1)
+ * como el historial permanente de Bitácora SGC (activa=0 o bloqueos en ROJO).
+ */
 class ValidacionController extends Controller
 {
+    // Lista validaciones; opcionalmente filtra solo las órdenes activas con ?activa=true (GET /api/validaciones)
     public function index(Request $request)
     {
         $query = Validacion::orderByDesc('id');
@@ -21,6 +26,7 @@ class ValidacionController extends Controller
         return response()->json($items, 200);
     }
 
+    // Guarda una nueva validación del semáforo VERDE, AMARILLO o ROJO (POST /api/validaciones)
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -53,6 +59,7 @@ class ValidacionController extends Controller
         return response()->json($this->formatItem($validacion), 201);
     }
 
+    // Actualiza notas de supervisión o finaliza una orden cambiando activa a false (PUT /api/validaciones/{id})
     public function update(Request $request, Validacion $validacion)
     {
         $validated = $request->validate([
@@ -71,6 +78,7 @@ class ValidacionController extends Controller
         return response()->json($this->formatItem($validacion), 200);
     }
 
+    // Elimina un registro de validación de la base de datos (DELETE /api/validaciones/{id})
     public function destroy(Validacion $validacion)
     {
         $validacion->delete();

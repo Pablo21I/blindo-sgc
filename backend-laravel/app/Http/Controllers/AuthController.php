@@ -7,10 +7,20 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Controlador de autenticación con Laravel Sanctum:
+ * maneja registro de cuentas, inicio de sesión (crea token), cierre de sesión (borra token) y perfil actual.
+ */
 class AuthController extends Controller
 {
+    // Registra un usuario nuevo en MySQL, lo da de alta en personal y devuelve su token Bearer
     public function register(Request $request)
     {
+        // Normalizamos el número de empleado a mayúsculas antes de validar unicidad
+        $request->merge([
+            'numero_empleado' => strtoupper(trim((string) $request->input('numero_empleado', ''))),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:120',
             'numero_empleado' => 'required|string|max:50|unique:users,numero_empleado',
@@ -55,6 +65,7 @@ class AuthController extends Controller
         ], 201);
     }
 
+    // Verifica empleado y contraseña; si coinciden emite token Sanctum, si no devuelve HTTP 401
     public function login(Request $request)
     {
         $validated = $request->validate([
@@ -83,6 +94,7 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // Revoca (elimina) el token actual en personal_access_tokens al cerrar sesión
     public function logout(Request $request)
     {
         $request->user()?->currentAccessToken()?->delete();
@@ -92,6 +104,7 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // Devuelve los datos del usuario dueño del token Bearer activo
     public function me(Request $request)
     {
         return response()->json($request->user(), 200);

@@ -2,6 +2,8 @@ package com.example.blindo.data.remote
 
 import com.google.gson.annotations.SerializedName
 
+// Clases de datos (DTOs) que convierten el JSON de Laravel a objetos Kotlin y viceversa
+
 // --- AUTH (Laravel Sanctum) ---
 
 data class LoginRequest(

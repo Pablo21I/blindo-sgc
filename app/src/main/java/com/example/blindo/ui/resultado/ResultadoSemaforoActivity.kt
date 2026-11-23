@@ -25,6 +25,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
+/**
+ * Muestra el resultado final del semáforo (VERDE, AMARILLO o ROJO),
+ * permite previsualizar/compartir el Permiso STPS en PDF y guarda el registro en MySQL.
+ */
 class ResultadoSemaforoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityResultadoBinding

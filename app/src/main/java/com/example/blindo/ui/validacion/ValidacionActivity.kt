@@ -42,6 +42,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
+/**
+ * Formulario de validación de seguridad previo a iniciar un trabajo (Paso 1: datos, Paso 2: EPP, Paso 3: evidencia).
+ * Evalúa las reglas Poka-Yoke + SIMOPS y envía el resultado a la pantalla de Semáforo.
+ */
 class ValidacionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityValidacionBinding
@@ -326,6 +330,7 @@ class ValidacionActivity : AppCompatActivity() {
         }
     }
 
+    // Corre el validador de seguridad (EPP, caducidad y SIMOPS) y abre la pantalla de Semáforo
     private fun ejecutarValidacion() {
         if (operadoresLista.isEmpty() || supervisoresLista.isEmpty()) {
             Toast.makeText(this, "Registra al menos 1 Operador y 1 Supervisor usando '+ Nuevo'", Toast.LENGTH_LONG).show()
@@ -337,8 +342,8 @@ class ValidacionActivity : AppCompatActivity() {
         }
 
         val trabajo = trabajoSeleccionado ?: trabajoSelectorAdapter.getSelectedTrabajo() ?: return
-        val opSeleccionado = operadoresLista[binding.spinnerOperador.selectedItemPosition]
-        val supSeleccionado = supervisoresLista[binding.spinnerSupervisor.selectedItemPosition]
+        val opSeleccionado = operadoresLista.getOrNull(binding.spinnerOperador.selectedItemPosition) ?: return
+        val supSeleccionado = supervisoresLista.getOrNull(binding.spinnerSupervisor.selectedItemPosition) ?: return
 
         val trabajador = "${opSeleccionado.nombre} (${opSeleccionado.numeroEmpleado})"
         val supervisor = "${supSeleccionado.nombre} (${supSeleccionado.numeroEmpleado})"

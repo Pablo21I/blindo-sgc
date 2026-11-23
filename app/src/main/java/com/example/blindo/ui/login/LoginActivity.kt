@@ -21,6 +21,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla de inicio de sesión y registro de cuentas.
+ * Se conecta a Laravel Sanctum, guarda el token en SharedPreferences y muestra errores 401/422 sin crashear.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -52,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    // Envía número de empleado y contraseña a POST /api/login y guarda el token si es correcto
     private fun intentarLogin() {
         val noEmpleado = binding.etUsuario.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
@@ -100,6 +105,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    // Abre el modal para crear una cuenta nueva en MySQL (POST /api/register)
     private fun mostrarDialogRegistroCuenta() {
         val dialog = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.dialog_registro_usuario, null)

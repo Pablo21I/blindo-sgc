@@ -49,6 +49,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Pantalla principal de Blindo SGC con 4 pestañas:
+ * Taller (órdenes activas), Personal (CRUD), EPP (inventario/caducidades) y Bitácora (historial + fotos + PDF).
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -64,8 +68,11 @@ class MainActivity : AppCompatActivity() {
     private var estadoBitacoraFiltro: String = "Todos"
     private var busquedaBitacoraTexto: String = ""
 
+    // Cachés en memoria para que las búsquedas y filtros sean instantáneos sin saturar la API
     private var cacheOrdenes: List<OrdenActiva> = emptyList()
     private var cacheBitacora: List<RegistroAuditoria> = emptyList()
+    private var cachePersonal: List<Personal> = emptyList()
+    private var cacheInventario: List<AsignacionEppDetalle> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,7 +193,7 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 busquedaPersonalTexto = s?.toString()?.trim()?.lowercase() ?: ""
-                lifecycleScope.launch { refrescarTabPersonal() }
+                aplicarFiltroPersonal()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -195,7 +202,7 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 busquedaEppTexto = s?.toString()?.trim()?.lowercase() ?: ""
-                lifecycleScope.launch { refrescarTabInventario() }
+                aplicarFiltroInventario()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -208,7 +215,7 @@ class MainActivity : AppCompatActivity() {
                     binding.chipEppVigentes.id -> "Vigentes"
                     else -> "Todos"
                 }
-                lifecycleScope.launch { refrescarTabInventario() }
+                aplicarFiltroInventario()
             }
         }
 
@@ -395,51 +402,65 @@ class MainActivity : AppCompatActivity() {
         binding.rvBitacoraTab.visibility = if (filtrados.isEmpty()) View.GONE else View.VISIBLE
     }
 
+    // Descarga la plantilla de personal desde Laravel y aplica el filtro actual
     private suspend fun refrescarTabPersonal() {
         MockBlindoRepository.getPersonalResult()
             .onSuccess { todos ->
-                val filtrados = if (busquedaPersonalTexto.isEmpty()) {
-                    todos
-                } else {
-                    todos.filter {
-                        it.nombre.lowercase().contains(busquedaPersonalTexto) ||
-                            it.numeroEmpleado.lowercase().contains(busquedaPersonalTexto)
-                    }
-                }
-                personalTabAdapter.updateData(filtrados)
-                binding.layoutEmptyPersonal.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
-                binding.rvPersonalTab.visibility = if (filtrados.isEmpty()) View.GONE else View.VISIBLE
+                cachePersonal = todos
+                aplicarFiltroPersonal()
             }
             .onFailure { err ->
                 manejarErrorApi(err)
             }
     }
 
+    // Filtra la lista de personal en memoria sin volver a consultar la red
+    private fun aplicarFiltroPersonal() {
+        val filtrados = if (busquedaPersonalTexto.isEmpty()) {
+            cachePersonal
+        } else {
+            cachePersonal.filter {
+                it.nombre.lowercase().contains(busquedaPersonalTexto) ||
+                    it.numeroEmpleado.lowercase().contains(busquedaPersonalTexto)
+            }
+        }
+        personalTabAdapter.updateData(filtrados)
+        binding.layoutEmptyPersonal.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
+        binding.rvPersonalTab.visibility = if (filtrados.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    // Descarga las asignaciones de EPP desde Laravel y aplica búsqueda + filtro de caducidad
     private suspend fun refrescarTabInventario() {
         MockBlindoRepository.getAsignacionesConDetalleResult()
             .onSuccess { todos ->
-                val filtrados = todos.filter { det ->
-                    val coincideTexto = busquedaEppTexto.isEmpty() ||
-                        det.epp.nombre.lowercase().contains(busquedaEppTexto) ||
-                        det.personal.nombre.lowercase().contains(busquedaEppTexto) ||
-                        det.personal.numeroEmpleado.lowercase().contains(busquedaEppTexto)
-
-                    val coincideEstado = when (estadoEppFiltro) {
-                        "Caducados" -> det.estado == EstadoEpp.CADUCADO
-                        "En Alerta" -> det.estado == EstadoEpp.ALERTA
-                        "Vigentes" -> det.estado == EstadoEpp.VIGENTE || det.estado == EstadoEpp.PERMANENTE
-                        else -> true
-                    }
-                    coincideTexto && coincideEstado
-                }
-
-                inventarioEppAdapter.updateData(filtrados)
-                binding.layoutEmptyEpp.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
-                binding.rvInventarioEpp.visibility = if (filtrados.isEmpty()) View.GONE else View.VISIBLE
+                cacheInventario = todos
+                aplicarFiltroInventario()
             }
             .onFailure { err ->
                 manejarErrorApi(err)
             }
+    }
+
+    // Filtra el inventario de EPP en memoria según búsqueda y estado (Caducados, Alerta, Vigentes)
+    private fun aplicarFiltroInventario() {
+        val filtrados = cacheInventario.filter { det ->
+            val coincideTexto = busquedaEppTexto.isEmpty() ||
+                det.epp.nombre.lowercase().contains(busquedaEppTexto) ||
+                det.personal.nombre.lowercase().contains(busquedaEppTexto) ||
+                det.personal.numeroEmpleado.lowercase().contains(busquedaEppTexto)
+
+            val coincideEstado = when (estadoEppFiltro) {
+                "Caducados" -> det.estado == EstadoEpp.CADUCADO
+                "En Alerta" -> det.estado == EstadoEpp.ALERTA
+                "Vigentes" -> det.estado == EstadoEpp.VIGENTE || det.estado == EstadoEpp.PERMANENTE
+                else -> true
+            }
+            coincideTexto && coincideEstado
+        }
+
+        inventarioEppAdapter.updateData(filtrados)
+        binding.layoutEmptyEpp.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
+        binding.rvInventarioEpp.visibility = if (filtrados.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun mostrarDetalleOrdenModal(orden: OrdenActiva) {
@@ -638,7 +659,7 @@ class MainActivity : AppCompatActivity() {
         val dialogBinding = DialogDetallePersonalBinding.inflate(layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        val partes = personal.nombre.trim().split(" ")
+        val partes = personal.nombre.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
         val iniciales = if (partes.size >= 2) {
             "${partes[0].firstOrNull() ?: ""}${partes[1].firstOrNull() ?: ""}".uppercase()
         } else {
