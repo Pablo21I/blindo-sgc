@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="8dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardConfirmRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/industrial_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="16dp"
+        app:strokeColor="@color/industrial_border"
+        app:strokeWidth="1.2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <FrameLayout
+                android:id="@+id/frameConfirmIcon"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_pill_red">
+
+                <ImageView
+                    android:id="@+id/ivConfirmIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_warning_triangle"
+                    app:tint="@color/status_red"
+                    android:contentDescription="Icono confirmación" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvConfirmTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:text="Confirmar acción"
+                android:textColor="@color/industrial_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvConfirmMensaje"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="¿Deseas continuar?"
+                android:textColor="@color/industrial_text_secondary"
+                android:textSize="13.5sp"
+                android:lineSpacingExtra="3dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnConfirmCancelar"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Cancelar"
+                    android:textAllCaps="false"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/industrial_text_primary"
+                    app:strokeColor="@color/industrial_border"
+                    app:cornerRadius="14dp" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="6dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnConfirmAceptar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="Confirmar"
+                        android:textAllCaps="false"
+                        android:textSize="13.5sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:backgroundTint="@color/status_red"
+                        app:cornerRadius="14dp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressConfirmAceptar"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:indeterminateTint="@color/white"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

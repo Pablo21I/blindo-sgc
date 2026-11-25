@@ -37,6 +37,8 @@
                 android:id="@+id/etNombreTrabajo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:maxLength="70"
                 android:singleLine="true"
                 android:textColor="@color/industrial_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -52,6 +54,8 @@
                 android:id="@+id/etNorma"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textCapCharacters"
+                android:maxLength="30"
                 android:singleLine="true"
                 android:textColor="@color/industrial_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>

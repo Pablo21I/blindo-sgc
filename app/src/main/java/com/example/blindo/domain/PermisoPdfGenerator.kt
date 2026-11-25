@@ -40,8 +40,9 @@ data class DatosPermisoPdf(
 )
 
 /**
- * Generador nativo de Permisos de Trabajo STPS en PDF (sin dependencias externas)
- * con renderizador integrado de vista previa para Android Emulator y dispositivos físicos.
+ * Generador nativo de Permiso de Trabajo Seguro (formato tabular clásico STPS / ISO-9001).
+ * Utiliza cuadrícula formal en blanco y negro con acentos sobrios de dictamen y ajuste multilínea
+ * para que ningún nombre ni dato se recorte.
  */
 object PermisoPdfGenerator {
 
@@ -52,10 +53,7 @@ object PermisoPdfGenerator {
         val doc = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
         val page = doc.startPage(pageInfo)
-        val canvas = page.canvas
-
-        dibujarDocumento(canvas, datos)
-
+        dibujarFormatoOficial(page.canvas, datos)
         doc.finishPage(page)
 
         val dir = File(context.cacheDir, "permisos").apply { mkdirs() }
@@ -65,249 +63,368 @@ object PermisoPdfGenerator {
         return file
     }
 
-    private fun dibujarDocumento(canvas: Canvas, datos: DatosPermisoPdf) {
-        val margin = 36f
-        val contentWidth = PAGE_WIDTH - margin * 2
+    private fun dibujarFormatoOficial(canvas: Canvas, datos: DatosPermisoPdf) {
+        val m = 34f
+        val contentW = PAGE_WIDTH - m * 2
+        val df = SimpleDateFormat("dd/MM/yyyy  HH:mm", Locale.getDefault())
 
-        // Fondo blanco limpio
+        // Hoja blanca limpia
         canvas.drawColor(Color.WHITE)
 
-        // 1. Encabezado corporativo azul oscuro
-        val headerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#0B1324") }
-        canvas.drawRect(0f, 0f, PAGE_WIDTH.toFloat(), 108f, headerPaint)
-
-        val accentBar = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#0EA5E9") }
-        canvas.drawRect(0f, 104f, PAGE_WIDTH.toFloat(), 108f, accentBar)
-
-        val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.WHITE
-            textSize = 20f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        val subtitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#94A3B8")
-            textSize = 10f
-        }
-        val folioPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#38BDF8")
-            textSize = 11f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-            textAlign = Paint.Align.RIGHT
-        }
-        val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#CBD5E1")
-            textSize = 9.5f
-            textAlign = Paint.Align.RIGHT
-        }
-
-        val df = SimpleDateFormat("dd/MM/yyyy · HH:mm", Locale.getDefault())
-        canvas.drawText("BLINDO SGC", margin, 44f, titlePaint)
-        canvas.drawText("PERMISO DE TRABAJO SEGURO · NORMATIVA STPS / NOM-017", margin, 64f, subtitlePaint)
-        canvas.drawText("Sistema de Control Poka-Yoke & Matriz SIMOPS", margin, 80f, subtitlePaint)
-
-        canvas.drawText("FOLIO: ${datos.folio}", PAGE_WIDTH - margin, 44f, folioPaint)
-        canvas.drawText("Emisión: ${df.format(Date(datos.fechaMillis))}", PAGE_WIDTH - margin, 62f, datePaint)
-
-        var y = 126f
-
-        // 2. Banner de Dictamen SGC
-        val (statusBgHex, statusTextHex, statusLabel) = when (datos.estado) {
-            "VERDE" -> Triple("#DCFCE7", "#065F46", "DICTAMEN: AUTORIZADO Y BLINDADO — APTO PARA OPERAR")
-            "AMARILLO" -> Triple("#FEF3C7", "#92400E", "DICTAMEN: AUTORIZADO CON PRECAUCIÓN — SUPERVISIÓN ESPECIAL")
-            else -> Triple("#FFE4E6", "#9F1239", "DICTAMEN: TRABAJO BLOQUEADO — OPERACIÓN NO AUTORIZADA")
-        }
-        val badgeBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor(statusBgHex) }
-        val badgeTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor(statusTextHex)
-            textSize = 11.5f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        canvas.drawRoundRect(RectF(margin, y, PAGE_WIDTH - margin, y + 32f), 8f, 8f, badgeBgPaint)
-        canvas.drawText(statusLabel, margin + 12f, y + 20f, badgeTextPaint)
-        y += 48f
-
-        // Estilos de sección
-        val sectionTitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#0F172A")
-            textSize = 11.5f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#64748B")
-            textSize = 9.5f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#0F172A")
-            textSize = 11f
-        }
-        val boxStroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#CBD5E1")
+        // Tintas y bordes formales de formato industrial (estilo ISO-9001 / STPS)
+        val borderHeavy = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#1F2937")
             style = Paint.Style.STROKE
-            strokeWidth = 1f
+            strokeWidth = 1.4f
         }
-        val boxFill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#F8FAFC")
+        val borderThin = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#6B7280")
+            style = Paint.Style.STROKE
+            strokeWidth = 0.8f
+        }
+        val bandFill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#E5E7EB")
+            style = Paint.Style.FILL
+        }
+        val subtleCellFill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#F9FAFB")
             style = Paint.Style.FILL
         }
 
-        // 3. Sección 1: Datos de la operación
-        canvas.drawText("1. DATOS DE LA OPERACIÓN Y RESPONSABLES", margin, y, sectionTitlePaint)
-        y += 8f
+        val brandPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 18f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            textAlign = Paint.Align.CENTER
+        }
+        val brandSubPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#4B5563")
+            textSize = 7.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            textAlign = Paint.Align.CENTER
+        }
+        val docTitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 13.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            textAlign = Paint.Align.CENTER
+        }
+        val docSubPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#374151")
+            textSize = 8.5f
+            textAlign = Paint.Align.CENTER
+        }
+        val metaLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#4B5563")
+            textSize = 7.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+        val metaValuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 9f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+        val sectionHeaderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 9.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+        val fieldLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#4B5563")
+            textSize = 7.8f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+        val bodyTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 9.5f
+        }
+        val boldBodyTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#111827")
+            textSize = 9.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
 
-        val infoTop = y
-        val infoHeight = 114f
-        canvas.drawRoundRect(RectF(margin, infoTop, PAGE_WIDTH - margin, infoTop + infoHeight), 8f, 8f, boxFill)
-        canvas.drawRoundRect(RectF(margin, infoTop, PAGE_WIDTH - margin, infoTop + infoHeight), 8f, 8f, boxStroke)
+        // Marco exterior del formato (estilo documento técnico impreso)
+        canvas.drawRect(m - 6f, 24f, PAGE_WIDTH - m + 6f, PAGE_HEIGHT - 26f, borderThin)
 
-        val col1 = margin + 12f
-        val col2 = margin + contentWidth / 2f + 8f
+        var y = 34f
 
-        canvas.drawText("ACTIVIDAD / TAREA", col1, infoTop + 18f, labelPaint)
-        canvas.drawText(datos.trabajo.take(38), col1, infoTop + 32f, valuePaint)
+        // =====================================================================
+        // ENCABEZADO TABULAR ISO-9001 / STPS (3 COLUMNAS)
+        // =====================================================================
+        val headerH = 66f
+        val leftColW = 115f
+        val rightColW = 152f
+        val midColX = m + leftColW
+        val rightColX = m + contentW - rightColW
 
-        canvas.drawText("NORMA Y RIESGO", col2, infoTop + 18f, labelPaint)
-        canvas.drawText("${datos.norma} · Riesgo ${datos.riesgo}", col2, infoTop + 32f, valuePaint)
+        canvas.drawRect(m, y, m + contentW, y + headerH, borderHeavy)
+        canvas.drawLine(midColX, y, midColX, y + headerH, borderHeavy)
+        canvas.drawLine(rightColX, y, rightColX, y + headerH, borderHeavy)
 
-        canvas.drawText("OPERADOR ASIGNADO", col1, infoTop + 56f, labelPaint)
-        canvas.drawText(datos.operador.take(36), col1, infoTop + 70f, valuePaint)
+        // Columna izquierda: Identidad
+        canvas.drawText("BLINDO", m + leftColW / 2f, y + 32f, brandPaint)
+        canvas.drawText("SEGURIDAD INDUSTRIAL", m + leftColW / 2f, y + 46f, brandSubPaint)
+        canvas.drawText("CONTROL EN SITIO", m + leftColW / 2f, y + 56f, brandSubPaint)
 
-        canvas.drawText("SUPERVISOR SGC", col2, infoTop + 56f, labelPaint)
-        canvas.drawText(datos.supervisor.take(36), col2, infoTop + 70f, valuePaint)
+        // Columna central: Nombre oficial del formato
+        val midCenter = midColX + (rightColX - midColX) / 2f
+        canvas.drawText("PERMISO DE TRABAJO SEGURO", midCenter, y + 29f, docTitlePaint)
+        canvas.drawText("Registro de Validación de EPP y Condiciones de Riesgo", midCenter, y + 44f, docSubPaint)
+        canvas.drawText("Referencia normativa: ${datos.norma} / NOM-017-STPS", midCenter, y + 56f, docSubPaint)
 
-        canvas.drawText("ZONA DE TRABAJO", col1, infoTop + 92f, labelPaint)
-        canvas.drawText(datos.zona.take(36), col1, infoTop + 106f, valuePaint)
+        // Columna derecha: 3 sub-filas (Folio, Fecha, Riesgo)
+        val rowH = headerH / 3f
+        canvas.drawLine(rightColX, y + rowH, m + contentW, y + rowH, borderThin)
+        canvas.drawLine(rightColX, y + rowH * 2f, m + contentW, y + rowH * 2f, borderThin)
 
-        canvas.drawText("TURNO", col2, infoTop + 92f, labelPaint)
-        canvas.drawText(datos.turno.take(36), col2, infoTop + 106f, valuePaint)
+        canvas.drawText("FOLIO:", rightColX + 6f, y + 14f, metaLabelPaint)
+        canvas.drawText(datos.folio, rightColX + 42f, y + 14f, metaValuePaint)
 
-        y = infoTop + infoHeight + 22f
+        canvas.drawText("FECHA:", rightColX + 6f, y + rowH + 14f, metaLabelPaint)
+        canvas.drawText(df.format(Date(datos.fechaMillis)), rightColX + 42f, y + rowH + 14f, metaValuePaint)
 
-        // 4. Sección 2: EPP Verificado
-        canvas.drawText("2. EQUIPO DE PROTECCIÓN PERSONAL VERIFICADO (NOM-017)", margin, y, sectionTitlePaint)
-        y += 10f
+        canvas.drawText("RIESGO:", rightColX + 6f, y + rowH * 2f + 14f, metaLabelPaint)
+        canvas.drawText(datos.riesgo.uppercase(Locale.getDefault()), rightColX + 46f, y + rowH * 2f + 14f, metaValuePaint)
+
+        y += headerH + 12f
+
+        // =====================================================================
+        // SELLO DE DICTAMEN (ESTILO SELLO INDUSTRIAL RECTANGULAR, SIN PILL SAAS)
+        // =====================================================================
+        val (stampColorHex, stampBgHex, stampTitle, stampDesc) = when (datos.estado) {
+            "VERDE" -> Quadruple(
+                "#166534", "#F0FDF4",
+                "DICTAMEN: AUTORIZADO",
+                "Condiciones de seguridad y EPP conformes para iniciar operación."
+            )
+            "AMARILLO" -> Quadruple(
+                "#92400E", "#FFFBEB",
+                "DICTAMEN: AUTORIZADO CON PRECAUCIÓN",
+                "Requiere supervisión continua y medidas adicionales indicadas abajo."
+            )
+            else -> Quadruple(
+                "#991B1B", "#FEF2F2",
+                "DICTAMEN: TRABAJO BLOQUEADO",
+                "Operación detenida por incumplimiento de seguridad o riesgo incompatible."
+            )
+        }
+        val stampFill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor(stampBgHex)
+            style = Paint.Style.FILL
+        }
+        val stampBorder = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor(stampColorHex)
+            style = Paint.Style.STROKE
+            strokeWidth = 1.6f
+        }
+        val stampText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor(stampColorHex)
+            textSize = 10.5f
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        }
+        val stampSubText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#1F2937")
+            textSize = 8.8f
+        }
+
+        val stampH = 36f
+        canvas.drawRect(m, y, m + contentW, y + stampH, stampFill)
+        canvas.drawRect(m, y, m + contentW, y + stampH, stampBorder)
+        canvas.drawRect(m, y, m + 5f, y + stampH, Paint().apply { color = Color.parseColor(stampColorHex) })
+        canvas.drawText(stampTitle, m + 13f, y + 15f, stampText)
+        canvas.drawText(stampDesc, m + 13f, y + 28f, stampSubText)
+
+        y += stampH + 12f
+
+        // =====================================================================
+        // SECCIÓN I: DATOS GENERALES DE LA OPERACIÓN (TABLA CON AJUSTE MULTILÍNEA)
+        // =====================================================================
+        y = dibujarBandaSeccion(canvas, m, y, contentW, "I. DATOS GENERALES DE LA OPERACIÓN", bandFill, borderHeavy, sectionHeaderPaint)
+
+        val halfW = contentW / 2f
+        val cellPad = 7f
+        val textMaxW = (halfW - cellPad * 2).toInt()
+
+        val filasDatos = listOf(
+            Pair("ACTIVIDAD / TAREA" to datos.trabajo, "NORMA APLICABLE" to "${datos.norma} · Riesgo ${datos.riesgo}"),
+            Pair("OPERADOR ASIGNADO" to datos.operador, "SUPERVISOR AUTORIZADOR" to datos.supervisor),
+            Pair("ZONA / ÁREA DE TRABAJO" to datos.zona, "TURNO" to datos.turno)
+        )
+
+        for ((izq, der) in filasDatos) {
+            val leftLayout = buildStaticLayout(izq.second, bodyTextPaint, textMaxW)
+            val rightLayout = buildStaticLayout(der.second, bodyTextPaint, textMaxW)
+            val cellH = maxOf(leftLayout.height, rightLayout.height) + 22f
+
+            canvas.drawRect(m, y, m + halfW, y + cellH, subtleCellFill)
+            canvas.drawRect(m + halfW, y, m + contentW, y + cellH, subtleCellFill)
+            canvas.drawRect(m, y, m + halfW, y + cellH, borderThin)
+            canvas.drawRect(m + halfW, y, m + contentW, y + cellH, borderThin)
+
+            canvas.drawText(izq.first, m + cellPad, y + 11f, fieldLabelPaint)
+            drawStaticLayout(canvas, leftLayout, m + cellPad, y + 15f)
+
+            canvas.drawText(der.first, m + halfW + cellPad, y + 11f, fieldLabelPaint)
+            drawStaticLayout(canvas, rightLayout, m + halfW + cellPad, y + 15f)
+
+            y += cellH
+        }
+
+        y += 12f
+
+        // =====================================================================
+        // SECCIÓN II: EQUIPO DE PROTECCIÓN PERSONAL VERIFICADO (LISTA [X])
+        // =====================================================================
+        y = dibujarBandaSeccion(canvas, m, y, contentW, "II. EQUIPO DE PROTECCIÓN PERSONAL VERIFICADO (NOM-017)", bandFill, borderHeavy, sectionHeaderPaint)
 
         val eppTexto = if (datos.eppsVerificados.isNotEmpty()) {
-            datos.eppsVerificados.joinToString("   |   ") { "✓ $it" }
+            datos.eppsVerificados.joinToString("    ") { "[X] $it" }
         } else {
-            "Verificado conforme a checklist técnico de la tarea."
+            "[ ] Sin equipos marcados en el listado de verificación."
         }
-        val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#1E293B")
-            textSize = 10f
-        }
-        val eppLayout = StaticLayout.Builder.obtain(
-            eppTexto, 0, eppTexto.length, textPaint, (contentWidth - 24f).toInt()
-        ).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(3f, 1f).build()
+        val eppLayout = buildStaticLayout(eppTexto, bodyTextPaint, (contentW - 16f).toInt())
+        val eppBoxH = eppLayout.height + 16f
+        canvas.drawRect(m, y, m + contentW, y + eppBoxH, borderThin)
+        drawStaticLayout(canvas, eppLayout, m + 8f, y + 8f)
 
-        val eppBoxHeight = eppLayout.height + 20f
-        canvas.drawRoundRect(RectF(margin, y, PAGE_WIDTH - margin, y + eppBoxHeight), 8f, 8f, boxFill)
-        canvas.drawRoundRect(RectF(margin, y, PAGE_WIDTH - margin, y + eppBoxHeight), 8f, 8f, boxStroke)
-        canvas.save()
-        canvas.translate(margin + 12f, y + 10f)
-        eppLayout.draw(canvas)
-        canvas.restore()
+        y += eppBoxH + 12f
 
-        y += eppBoxHeight + 20f
+        // =====================================================================
+        // SECCIÓN III: OBSERVACIONES Y DIAGNÓSTICO DE SEGURIDAD
+        // =====================================================================
+        y = dibujarBandaSeccion(canvas, m, y, contentW, "III. DIAGNÓSTICO Y OBSERVACIONES DE SEGURIDAD", bandFill, borderHeavy, sectionHeaderPaint)
 
-        // 5. Sección 3: Diagnóstico SGC / SIMOPS
-        canvas.drawText("3. DIAGNÓSTICO TÉCNICO POKA-YOKE / SIMOPS", margin, y, sectionTitlePaint)
-        y += 10f
+        val diagLimpio = datos.diagnostico
+            .removePrefix("Orden iniciada en piso: ")
+            .trim()
+            .ifEmpty { "Verificación completada conforme a procedimiento interno." }
+        val diagLayout = buildStaticLayout(diagLimpio, bodyTextPaint, (contentW - 16f).toInt())
+        val diagBoxH = diagLayout.height + 16f
+        canvas.drawRect(m, y, m + contentW, y + diagBoxH, borderThin)
+        drawStaticLayout(canvas, diagLayout, m + 8f, y + 8f)
 
-        val diagLayout = StaticLayout.Builder.obtain(
-            datos.diagnostico, 0, datos.diagnostico.length, textPaint, (contentWidth - 24f).toInt()
-        ).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(3f, 1f).build()
+        y += diagBoxH + 12f
 
-        val diagBoxHeight = diagLayout.height + 20f
-        canvas.drawRoundRect(RectF(margin, y, PAGE_WIDTH - margin, y + diagBoxHeight), 8f, 8f, boxFill)
-        canvas.drawRoundRect(RectF(margin, y, PAGE_WIDTH - margin, y + diagBoxHeight), 8f, 8f, boxStroke)
-        canvas.save()
-        canvas.translate(margin + 12f, y + 10f)
-        diagLayout.draw(canvas)
-        canvas.restore()
-
-        y += diagBoxHeight + 20f
-
-        // 6. Sección 4: Evidencia Fotográfica (si fue capturada)
+        // =====================================================================
+        // SECCIÓN IV: EVIDENCIA FOTOGRÁFICA EN SITIO (SI EXISTE)
+        // =====================================================================
         val fotoFile = datos.evidenciaPath?.let { File(it) }?.takeIf { it.exists() }
-        if (fotoFile != null && y < 560f) {
-            canvas.drawText("4. EVIDENCIA FOTOGRÁFICA DE INSPECCIÓN EN SITIO", margin, y, sectionTitlePaint)
-            y += 10f
+        if (fotoFile != null && y < 565f) {
+            y = dibujarBandaSeccion(canvas, m, y, contentW, "IV. EVIDENCIA FOTOGRÁFICA EN SITIO", bandFill, borderHeavy, sectionHeaderPaint)
 
             val bmp = BitmapFactory.decodeFile(fotoFile.absolutePath)
             if (bmp != null) {
-                val maxBoxH = (690f - y).coerceIn(100f, 180f)
-                val maxBoxW = 240f
+                val maxBoxH = (675f - y).coerceIn(105f, 168f)
+                val maxBoxW = 235f
                 val ratio = minOf(maxBoxW / bmp.width.toFloat(), maxBoxH / bmp.height.toFloat())
                 val drawW = bmp.width * ratio
                 val drawH = bmp.height * ratio
+                val boxH = drawH + 16f
 
-                val imgRect = RectF(margin, y, margin + drawW, y + drawH)
+                canvas.drawRect(m, y, m + contentW, y + boxH, borderThin)
+
+                val imgRect = RectF(m + 8f, y + 8f, m + 8f + drawW, y + 8f + drawH)
                 canvas.drawBitmap(bmp, null, imgRect, Paint(Paint.FILTER_BITMAP_FLAG))
-                canvas.drawRect(imgRect, boxStroke)
+                canvas.drawRect(imgRect, borderThin)
 
-                // Nota al lado de la foto
-                val noteX = margin + drawW + 16f
-                val noteW = (PAGE_WIDTH - margin - noteX).toInt().coerceAtLeast(100)
-                val notaEvidencia = "Evidencia capturada al momento de la validación.\nFecha: ${df.format(Date(datos.fechaMillis))}\nZona: ${datos.zona}\nOperador: ${datos.operador}"
-                val noteLayout = StaticLayout.Builder.obtain(
-                    notaEvidencia, 0, notaEvidencia.length, textPaint, noteW
-                ).setLineSpacing(4f, 1f).build()
-
-                canvas.save()
-                canvas.translate(noteX, y + 8f)
-                noteLayout.draw(canvas)
-                canvas.restore()
+                val noteX = m + 16f + drawW
+                val noteW = (m + contentW - 8f - noteX).toInt().coerceAtLeast(110)
+                val notaEvidencia =
+                    "Registro visual tomado al momento de la inspección.\n\n" +
+                        "Fecha y hora: ${df.format(Date(datos.fechaMillis))}\n" +
+                        "Área: ${datos.zona}\n" +
+                        "Operador: ${datos.operador}"
+                val noteLayout = buildStaticLayout(notaEvidencia, bodyTextPaint, noteW)
+                drawStaticLayout(canvas, noteLayout, noteX, y + 10f)
 
                 bmp.recycle()
             }
         }
 
-        // 7. Sección de Firmas al pie del documento
-        val sigY = 768f
-        val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#334155")
-            strokeWidth = 1f
-        }
-        val sigLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#334155")
-            textSize = 9.5f
+        // =====================================================================
+        // SECCIÓN DE FIRMAS (CON AJUSTE MULTILÍNEA — NUNCA RECORTA NOMBRES LARGOS)
+        // =====================================================================
+        val sigBoxTop = 716f
+        val sigBoxH = 82f
+        val sigColW = contentW / 2f
+
+        canvas.drawRect(m, sigBoxTop, m + sigColW, sigBoxTop + sigBoxH, borderThin)
+        canvas.drawRect(m + sigColW, sigBoxTop, m + contentW, sigBoxTop + sigBoxH, borderThin)
+
+        val lineY = sigBoxTop + 34f
+        canvas.drawLine(m + 24f, lineY, m + sigColW - 24f, lineY, borderHeavy)
+        canvas.drawLine(m + sigColW + 24f, lineY, m + contentW - 24f, lineY, borderHeavy)
+
+        val sigTextW = (sigColW - 20f).toInt()
+        val supLayout = buildStaticLayout(datos.supervisor, boldBodyTextPaint, sigTextW, Layout.Alignment.ALIGN_CENTER)
+        val opLayout = buildStaticLayout(datos.operador, boldBodyTextPaint, sigTextW, Layout.Alignment.ALIGN_CENTER)
+
+        drawStaticLayout(canvas, supLayout, m + 10f, lineY + 5f)
+        drawStaticLayout(canvas, opLayout, m + sigColW + 10f, lineY + 5f)
+
+        val rolePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#4B5563")
+            textSize = 8f
             textAlign = Paint.Align.CENTER
         }
-        val sigNamePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#0F172A")
-            textSize = 10f
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-            textAlign = Paint.Align.CENTER
-        }
+        canvas.drawText("Firma del Supervisor Autorizador", m + sigColW / 2f, sigBoxTop + sigBoxH - 8f, rolePaint)
+        canvas.drawText("Firma de Conformidad del Operador", m + sigColW + sigColW / 2f, sigBoxTop + sigBoxH - 8f, rolePaint)
 
-        val leftCenter = margin + contentWidth * 0.23f
-        val rightCenter = margin + contentWidth * 0.77f
-
-        canvas.drawLine(margin + 10f, sigY, margin + contentWidth * 0.44f, sigY, linePaint)
-        canvas.drawText(datos.supervisor.take(30), leftCenter, sigY + 14f, sigNamePaint)
-        canvas.drawText("Supervisor SGC Autorizador", leftCenter, sigY + 26f, sigLabelPaint)
-
-        canvas.drawLine(margin + contentWidth * 0.56f, sigY, PAGE_WIDTH - margin - 10f, sigY, linePaint)
-        canvas.drawText(datos.operador.take(30), rightCenter, sigY + 14f, sigNamePaint)
-        canvas.drawText("Conformidad del Operador", rightCenter, sigY + 26f, sigLabelPaint)
-
+        // Pie de página sobrio
         val footerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#94A3B8")
-            textSize = 8.5f
+            color = Color.parseColor("#6B7280")
+            textSize = 7.8f
             textAlign = Paint.Align.CENTER
         }
         canvas.drawText(
-            "Documento electrónico generado por Blindo SGC · Respaldo auditable NOM-017-STPS",
+            "Formato de Control Interno · Blindo Seguridad Industrial · Folio ${datos.folio}",
             PAGE_WIDTH / 2f,
-            822f,
+            810f,
             footerPaint
         )
     }
 
+    private fun dibujarBandaSeccion(
+        canvas: Canvas,
+        x: Float,
+        y: Float,
+        w: Float,
+        titulo: String,
+        bgPaint: Paint,
+        borderPaint: Paint,
+        textPaint: Paint
+    ): Float {
+        val h = 19f
+        canvas.drawRect(x, y, x + w, y + h, bgPaint)
+        canvas.drawRect(x, y, x + w, y + h, borderPaint)
+        canvas.drawText(titulo, x + 7f, y + 13f, textPaint)
+        return y + h
+    }
+
+    private fun buildStaticLayout(
+        text: String,
+        paint: TextPaint,
+        width: Int,
+        alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
+    ): StaticLayout {
+        return StaticLayout.Builder.obtain(text, 0, text.length, paint, width.coerceAtLeast(40))
+            .setAlignment(alignment)
+            .setLineSpacing(2.5f, 1f)
+            .build()
+    }
+
+    private fun drawStaticLayout(canvas: Canvas, layout: StaticLayout, x: Float, y: Float) {
+        canvas.save()
+        canvas.translate(x, y)
+        layout.draw(canvas)
+        canvas.restore()
+    }
+
+    private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+
     /**
-     * Renderiza la página 1 del PDF como Bitmap de alta resolución usando PdfRenderer nativo.
-     * Garantiza vista previa instantánea incluso en emuladores sin visor PDF instalado.
+     * Renderiza la página 1 del PDF como Bitmap en alta resolución (3x) usando PdfRenderer nativo.
      */
     fun renderizarPrimeraPagina(pdfFile: File): Bitmap? {
         return try {
@@ -315,7 +432,6 @@ object PermisoPdfGenerator {
                 PdfRenderer(pfd).use { renderer ->
                     if (renderer.pageCount <= 0) return null
                     renderer.openPage(0).use { page ->
-                        // Renderizamos en alta resolución (3x) para que al hacer zoom se lea nítido en proyector
                         val scale = 3
                         val bmp = Bitmap.createBitmap(page.width * scale, page.height * scale, Bitmap.Config.ARGB_8888)
                         bmp.eraseColor(Color.WHITE)

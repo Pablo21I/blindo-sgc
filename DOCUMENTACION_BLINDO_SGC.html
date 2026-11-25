@@ -2,109 +2,105 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Documentación Técnica — Blindo SGC (Android + Laravel API)</title>
+<title>Documentación Técnica — Blindo SGC</title>
 <style>
-  @page { size: letter; margin: 12mm 14mm; }
+  @page { size: letter; margin: 14mm 16mm; }
   * { box-sizing: border-box; }
   body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: #0F172A;
-    line-height: 1.42;
-    max-width: 820px;
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    color: #1F2937;
+    line-height: 1.45;
+    max-width: 800px;
     margin: 0 auto;
     padding: 16px;
     background: #FFFFFF;
   }
-  .header {
-    background: linear-gradient(135deg, #0B1324, #14233C);
-    color: #FFFFFF;
-    padding: 16px 22px;
-    border-radius: 12px;
-    border-bottom: 4px solid #0EA5E9;
+  .doc-header {
+    border-top: 3px solid #1F2937;
+    border-bottom: 1.5px solid #9CA3AF;
+    padding: 12px 0 10px;
     margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
   }
-  .header h1 { margin: 0; font-size: 20px; letter-spacing: 0.4px; }
-  .header p { margin: 4px 0 0; color: #CBD5E1; font-size: 12px; }
-  .badge {
-    display: inline-block;
-    background: rgba(14,165,233,0.2);
-    color: #38BDF8;
-    border: 1px solid #0EA5E9;
-    padding: 2px 10px;
-    border-radius: 999px;
+  .doc-header h1 {
+    margin: 0;
+    font-size: 19px;
+    color: #111827;
+    letter-spacing: 0.2px;
+  }
+  .doc-header .subtitle {
+    margin: 3px 0 0;
+    font-size: 11.5px;
+    color: #4B5563;
+  }
+  .doc-meta {
+    text-align: right;
     font-size: 10.5px;
-    font-weight: 700;
-    margin-top: 7px;
+    color: #374151;
+    line-height: 1.5;
+    white-space: nowrap;
   }
+  .doc-meta strong { color: #111827; }
   h2 {
-    color: #0B1324;
-    font-size: 13.5px;
-    border-left: 4px solid #0EA5E9;
-    padding-left: 10px;
+    color: #111827;
+    font-size: 13px;
+    border-bottom: 1px solid #D1D5DB;
+    padding-bottom: 3px;
     margin: 14px 0 7px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
   }
-  p, li { font-size: 11.8px; color: #1E293B; margin: 4px 0; }
+  p, li { font-size: 11.5px; color: #1F2937; margin: 4px 0; }
   ul { margin: 4px 0 6px; padding-left: 20px; }
   .diagram-box {
-    border: 1px solid #CBD5E1;
-    border-radius: 10px;
+    border: 1px solid #9CA3AF;
     padding: 10px;
-    background: #F8FAFC;
-    margin: 6px 0 10px;
+    background: #FFFFFF;
+    margin: 8px 0 10px;
     text-align: center;
   }
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 6px 0 8px;
-    font-size: 11.2px;
+    margin: 6px 0 10px;
+    font-size: 11px;
   }
   th, td {
-    border: 1px solid #CBD5E1;
-    padding: 5px 8px;
+    border: 1px solid #9CA3AF;
+    padding: 5.5px 8px;
     text-align: left;
+    vertical-align: top;
   }
   th {
-    background: #0F172A;
-    color: #FFFFFF;
-    font-weight: 600;
+    background: #F3F4F6;
+    color: #111827;
+    font-weight: 700;
   }
-  tr:nth-child(even) td { background: #F8FAFC; }
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin: 10px 0;
+  .retos-table td:first-child {
+    width: 24%;
+    font-weight: 700;
+    background: #F9FAFB;
   }
-  .card {
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    padding: 11px 13px;
-    background: #F8FAFC;
-  }
-  .card h3 {
-    margin: 0 0 5px;
-    font-size: 12.5px;
-    color: #0369A1;
-  }
-  .card p { margin: 0; font-size: 11.8px; }
   .code {
-    font-family: Consolas, monospace;
-    background: #E2E8F0;
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-size: 11px;
+    font-family: Consolas, 'Courier New', monospace;
+    background: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    padding: 0.5px 4px;
+    font-size: 10.2px;
+    color: #111827;
   }
   .page-break { page-break-before: always; }
   .footer {
-    margin-top: 22px;
-    padding-top: 10px;
-    border-top: 1px solid #CBD5E1;
-    font-size: 11px;
-    color: #64748B;
-    text-align: center;
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #D1D5DB;
+    font-size: 10px;
+    color: #6B7280;
+    display: flex;
+    justify-content: space-between;
   }
   @media print {
     body { padding: 0; }
@@ -114,14 +110,12 @@
     position: fixed;
     right: 20px;
     bottom: 20px;
-    background: #0EA5E9;
+    background: #1F2937;
     color: #fff;
     border: none;
-    padding: 12px 18px;
-    border-radius: 10px;
+    padding: 10px 16px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 6px 18px rgba(14,165,233,0.35);
   }
 </style>
 </head>
@@ -129,79 +123,102 @@
 
 <button class="print-btn no-print" onclick="window.print()">Guardar / Imprimir PDF</button>
 
-<div class="header">
-  <h1>BLINDO SGC — Documentación Arquitectónica y Técnica</h1>
-  <p>Aplicación Móvil Android de Seguridad Industrial (Poka-Yoke, SIMOPS y NOM-017-STPS) conectada a API REST en Laravel + Sanctum + MySQL</p>
-  <span class="badge">APLICACIONES MÓVILES · CLIENTE REST PROTEGIDO</span>
-  <span class="badge" style="margin-left:6px;">ALUMNO: PABLO ISAAC NAVARRO MENDOZA</span>
+<div class="doc-header">
+  <div>
+    <h1>Blindo SGC — Documentación Técnica</h1>
+    <div class="subtitle">Integración de aplicación móvil Android con API REST en Laravel 12, Sanctum y MySQL</div>
+  </div>
+  <div class="doc-meta">
+    <div><strong>Alumno:</strong> Pablo Isaac Navarro Mendoza</div>
+    <div><strong>Materia:</strong> Aplicaciones Móviles</div>
+    <div><strong>Repositorio:</strong> github.com/Pablo21I/blindo-sgc</div>
+  </div>
 </div>
 
-<h2>1. Resumen del Proyecto</h2>
+<h2>1. Descripción General de la Solución</h2>
 <p>
-  <strong>Blindo SGC</strong> es una herramienta móvil dirigida a <strong>supervisores de seguridad industrial</strong> que digitaliza y blinda la autorización de trabajos de riesgo en piso (<em>Permit-to-Work</em>). La aplicación dejó de operar de forma aislada (offline) para convertirse en un cliente móvil conectado en tiempo real a un backend RESTful desarrollado en <strong>Laravel 12</strong> con autenticación mediante <strong>Laravel Sanctum</strong> y persistencia relacional en <strong>MySQL</strong>.
+  <strong>Blindo SGC</strong> es una aplicación móvil dirigida a supervisores de seguridad industrial para validar permisos de trabajo de riesgo en planta (<em>Permit-to-Work</em>). El sistema migró de una operación local aislada a una arquitectura cliente-servidor en tiempo real respaldada por <strong>Laravel 12</strong>, <strong>Laravel Sanctum</strong> y <strong>MySQL</strong>.
 </p>
 <ul>
-  <li><strong>Control Poka-Yoke y caducidad de EPP:</strong> cruza el inventario asignado a cada operador contra la norma NOM-017-STPS, bloqueando en rojo cualquier equipo caducado.</li>
-  <li><strong>Detección SIMOPS en tiempo real:</strong> impide autorizar operaciones incompatibles en la misma zona (ej. soldadura junto a solventes inflamables).</li>
-  <li><strong>Respaldo legal auditable:</strong> registra evidencias fotográficas, firma histórica del supervisor en bitácora y genera Permisos de Trabajo STPS en formato PDF nativo.</li>
+  <li><strong>Control de EPP y caducidades:</strong> verifica el equipo asignado al operador contra la norma NOM-017-STPS y bloquea cualquier actividad cuyo equipo obligatorio esté vencido.</li>
+  <li><strong>Detección de actividades incompatibles (SIMOPS):</strong> consulta órdenes activas en la misma zona para impedir combinaciones críticas (por ejemplo, soldadura junto a solventes inflamables).</li>
+  <li><strong>Evidencia y respaldo auditable:</strong> registra historial con fotografía en sitio, supervisor autorizador y genera un Permiso de Trabajo Seguro en PDF nativo.</li>
 </ul>
 
-<h2>2. Diagrama Arquitectónico de la Solución</h2>
-<p>La comunicación sigue una arquitectura Cliente-Servidor de 3 capas desacopladas mediante JSON sobre HTTP/HTTPS con inyección automática de Bearer Token:</p>
+<h2>2. Diagrama Arquitectónico de Comunicación</h2>
+<p>
+  La solución se divide en tres capas desacopladas que se comunican mediante peticiones REST en formato JSON con autenticación por Bearer Token:
+</p>
 
 <div class="diagram-box">
-  <svg viewBox="0 0 760 220" width="100%" height="210" xmlns="http://www.w3.org/2000/svg">
-    <!-- Android App Box -->
-    <rect x="12" y="18" width="215" height="184" rx="12" fill="#0F172A" stroke="#0EA5E9" stroke-width="2"/>
-    <text x="119" y="42" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="bold">CLIENTE ANDROID (Kotlin)</text>
-    <rect x="26" y="54" width="187" height="32" rx="6" fill="#1E293B"/>
-    <text x="119" y="74" text-anchor="middle" fill="#F8FAFC" font-size="10.5">UI Activities + ViewBinding + PDF</text>
-    <rect x="26" y="94" width="187" height="32" rx="6" fill="#1E293B"/>
-    <text x="119" y="114" text-anchor="middle" fill="#F8FAFC" font-size="10.5">ValidadorBlindo + Repository (IO)</text>
-    <rect x="26" y="134" width="187" height="26" rx="6" fill="#0369A1"/>
-    <text x="119" y="151" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold">Retrofit 2 + AuthInterceptor</text>
-    <rect x="26" y="166" width="187" height="24" rx="6" fill="#1E293B" stroke="#334155"/>
-    <text x="119" y="182" text-anchor="middle" fill="#94A3B8" font-size="9.5">SharedPreferences (Token) + Room STPS</text>
+  <svg viewBox="0 0 740 205" width="100%" height="185" xmlns="http://www.w3.org/2000/svg" font-family="Calibri, Arial, sans-serif">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#374151"/>
+      </marker>
+    </defs>
 
-    <!-- Arrow 1 -->
-    <line x1="229" y1="90" x2="294" y2="90" stroke="#0EA5E9" stroke-width="2.2"/>
-    <polygon points="294,85 304,90 294,95" fill="#0EA5E9"/>
-    <text x="265" y="76" text-anchor="middle" fill="#0F172A" font-size="9" font-weight="bold">REST JSON</text>
-    <text x="265" y="86" text-anchor="middle" fill="#475569" font-size="8.5">Bearer Token</text>
+    <!-- Capa 1: Cliente Android -->
+    <rect x="10" y="14" width="215" height="176" fill="#FFFFFF" stroke="#1F2937" stroke-width="1.6"/>
+    <rect x="10" y="14" width="215" height="26" fill="#E5E7EB" stroke="#1F2937" stroke-width="1.6"/>
+    <text x="117" y="31" text-anchor="middle" fill="#111827" font-size="11.5" font-weight="bold">CLIENTE ANDROID (Kotlin)</text>
 
-    <line x1="304" y1="130" x2="239" y2="130" stroke="#10B981" stroke-width="2.2"/>
-    <polygon points="239,125 229,130 239,135" fill="#10B981"/>
-    <text x="267" y="145" text-anchor="middle" fill="#065F46" font-size="8.5">200/201 · 401 · 422</text>
+    <rect x="22" y="50" width="191" height="28" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="117" y="68" text-anchor="middle" fill="#111827" font-size="10">Activities + ViewBinding + PDF Nativo</text>
 
-    <!-- Laravel API Box -->
-    <rect x="306" y="18" width="215" height="184" rx="12" fill="#0F172A" stroke="#F59E0B" stroke-width="2"/>
-    <text x="413" y="42" text-anchor="middle" fill="#FBBF24" font-size="12" font-weight="bold">BACKEND API (Laravel 12)</text>
-    <rect x="320" y="54" width="187" height="32" rx="6" fill="#1E293B"/>
-    <text x="413" y="74" text-anchor="middle" fill="#F8FAFC" font-size="10.5">routes/api.php + auth:sanctum</text>
-    <rect x="320" y="94" width="187" height="44" rx="6" fill="#1E293B"/>
-    <text x="413" y="112" text-anchor="middle" fill="#F8FAFC" font-size="10">Auth · Personal · AsignacionEpp</text>
-    <text x="413" y="128" text-anchor="middle" fill="#94A3B8" font-size="9.5">ValidacionController (CRUD + 422)</text>
-    <rect x="320" y="146" width="187" height="42" rx="6" fill="#1E293B" stroke="#334155"/>
-    <text x="413" y="164" text-anchor="middle" fill="#F8FAFC" font-size="10">Eloquent ORM + Relaciones</text>
-    <text x="413" y="179" text-anchor="middle" fill="#94A3B8" font-size="9">HasApiTokens · Hash Bcrypt</text>
+    <rect x="22" y="86" width="191" height="28" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="117" y="104" text-anchor="middle" fill="#111827" font-size="10">ValidadorBlindo + Repository (IO)</text>
 
-    <!-- Arrow 2 -->
-    <line x1="523" y1="110" x2="574" y2="110" stroke="#64748B" stroke-width="2.2"/>
-    <polygon points="574,105 584,110 574,115" fill="#64748B"/>
-    <polygon points="533,105 523,110 533,115" fill="#64748B"/>
-    <text x="553" y="100" text-anchor="middle" fill="#475569" font-size="9" font-weight="bold">PDO / SQL</text>
+    <rect x="22" y="122" width="191" height="28" fill="#EEF2FF" stroke="#374151" stroke-width="1.2"/>
+    <text x="117" y="140" text-anchor="middle" fill="#111827" font-size="10" font-weight="bold">Retrofit 2 + AuthInterceptor</text>
 
-    <!-- MySQL Box -->
-    <rect x="586" y="28" width="162" height="164" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="2"/>
-    <text x="667" y="52" text-anchor="middle" fill="#34D399" font-size="12" font-weight="bold">BASE DE DATOS MySQL</text>
-    <rect x="598" y="64" width="138" height="22" rx="5" fill="#1E293B"/>
-    <text x="667" y="79" text-anchor="middle" fill="#F8FAFC" font-size="10">users + tokens</text>
-    <rect x="598" y="92" width="138" height="22" rx="5" fill="#1E293B"/>
-    <text x="667" y="107" text-anchor="middle" fill="#F8FAFC" font-size="10">personals (FK user_id)</text>
-    <rect x="598" y="120" width="138" height="22" rx="5" fill="#1E293B"/>
-    <text x="667" y="135" text-anchor="middle" fill="#F8FAFC" font-size="10">asignacion_epps (FKs)</text>
-    <rect x="598" y="148" width="138" height="22" rx="5" fill="#1E293B"/>
-    <text x="667" y="163" text-anchor="middle" fill="#F8FAFC" font-size="10">validaciones (FKs)</text>
+    <rect x="22" y="156" width="191" height="24" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="117" y="172" text-anchor="middle" fill="#374151" font-size="9.5">SharedPreferences (Token) + Room STPS</text>
+
+    <!-- Flechas Android <-> Laravel -->
+    <line x1="225" y1="84" x2="293" y2="84" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="259" y="72" text-anchor="middle" fill="#111827" font-size="9" font-weight="bold">HTTP / JSON</text>
+    <text x="259" y="81" text-anchor="middle" fill="#4B5563" font-size="8.2">Bearer Token</text>
+
+    <line x1="295" y1="126" x2="227" y2="126" stroke="#374151" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="259" y="140" text-anchor="middle" fill="#4B5563" font-size="8.2">200 · 401 · 422</text>
+
+    <!-- Capa 2: Backend Laravel -->
+    <rect x="295" y="14" width="215" height="176" fill="#FFFFFF" stroke="#1F2937" stroke-width="1.6"/>
+    <rect x="295" y="14" width="215" height="26" fill="#E5E7EB" stroke="#1F2937" stroke-width="1.6"/>
+    <text x="402" y="31" text-anchor="middle" fill="#111827" font-size="11.5" font-weight="bold">API REST (Laravel 12)</text>
+
+    <rect x="307" y="50" width="191" height="30" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="402" y="69" text-anchor="middle" fill="#111827" font-size="10">routes/api.php + auth:sanctum</text>
+
+    <rect x="307" y="88" width="191" height="44" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="402" y="106" text-anchor="middle" fill="#111827" font-size="9.8" font-weight="bold">Controladores RESTful</text>
+    <text x="402" y="122" text-anchor="middle" fill="#4B5563" font-size="9">Auth · Personal · EPP · Validaciones</text>
+
+    <rect x="307" y="140" width="191" height="40" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="402" y="157" text-anchor="middle" fill="#111827" font-size="9.8" font-weight="bold">Eloquent ORM + Sanctum</text>
+    <text x="402" y="171" text-anchor="middle" fill="#4B5563" font-size="9">Relaciones FK · HasApiTokens · Bcrypt</text>
+
+    <!-- Flecha Laravel <-> MySQL -->
+    <line x1="510" y1="102" x2="563" y2="102" stroke="#374151" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <text x="537" y="94" text-anchor="middle" fill="#374151" font-size="9" font-weight="bold">PDO / SQL</text>
+
+    <!-- Capa 3: Base de Datos MySQL -->
+    <rect x="565" y="24" width="165" height="156" fill="#FFFFFF" stroke="#1F2937" stroke-width="1.6"/>
+    <rect x="565" y="24" width="165" height="26" fill="#E5E7EB" stroke="#1F2937" stroke-width="1.6"/>
+    <text x="647" y="41" text-anchor="middle" fill="#111827" font-size="11.5" font-weight="bold">BASE DE DATOS MySQL</text>
+
+    <rect x="577" y="60" width="141" height="22" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="647" y="75" text-anchor="middle" fill="#111827" font-size="9.5">users + access_tokens</text>
+
+    <rect x="577" y="88" width="141" height="22" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="647" y="103" text-anchor="middle" fill="#111827" font-size="9.5">personals (FK user_id)</text>
+
+    <rect x="577" y="116" width="141" height="22" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="647" y="131" text-anchor="middle" fill="#111827" font-size="9.5">asignacion_epps (FKs)</text>
+
+    <rect x="577" y="144" width="141" height="22" fill="#F9FAFB" stroke="#6B7280" stroke-width="1"/>
+    <text x="647" y="159" text-anchor="middle" fill="#111827" font-size="9.5">validaciones (FKs)</text>
   </svg>
 </div>
 
@@ -210,29 +227,29 @@
   <thead>
     <tr>
       <th>Tabla MySQL</th>
-      <th>Relaciones (Claves Foráneas)</th>
+      <th>Relaciones y Restricciones</th>
       <th>Endpoints Protegidos (Sanctum)</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><span class="code">users</span> &amp; <span class="code">personal_access_tokens</span></td>
-      <td>Tabla padre de cuentas SGC y tokens Sanctum</td>
+      <td><span class="code">users</span> y <span class="code">personal_access_tokens</span></td>
+      <td>Cuentas de acceso con contraseña Bcrypt y tokens emitidos por Laravel Sanctum.</td>
       <td><span class="code">POST /api/register</span>, <span class="code">POST /api/login</span>, <span class="code">POST /api/logout</span>, <span class="code">GET /api/me</span></td>
     </tr>
     <tr>
       <td><span class="code">personals</span></td>
-      <td><span class="code">user_id → users.id</span> (nullOnDelete)</td>
+      <td><span class="code">user_id → users.id</span> (nullOnDelete); <span class="code">numero_empleado</span> único.</td>
       <td><span class="code">GET / POST / PUT / DELETE /api/personal</span></td>
     </tr>
     <tr>
       <td><span class="code">asignacion_epps</span></td>
-      <td><span class="code">personal_id → personals.id</span> (cascade), <span class="code">user_id → users.id</span>, índice único <span class="code">(personal_id, epp_id)</span></td>
+      <td><span class="code">personal_id → personals.id</span> (cascade), <span class="code">user_id → users.id</span>, índice único <span class="code">(personal_id, epp_id)</span>.</td>
       <td><span class="code">GET / POST / PUT / DELETE /api/asignaciones-epp</span></td>
     </tr>
     <tr>
       <td><span class="code">validaciones</span></td>
-      <td><span class="code">personal_id → personals.id</span>, <span class="code">user_id → users.id</span> (unifica órdenes activas y bitácora)</td>
+      <td><span class="code">personal_id → personals.id</span>, <span class="code">user_id → users.id</span>; el campo booleano <span class="code">activa</span> separa órdenes en piso de bitácora cerrada.</td>
       <td><span class="code">GET / POST / PUT / DELETE /api/validaciones</span></td>
     </tr>
   </tbody>
@@ -242,48 +259,53 @@
 
 <h2>4. Seguridad, Autenticación y Manejo de Errores</h2>
 <ul>
-  <li><strong>Laravel Sanctum:</strong> Al iniciar sesión (<span class="code">POST /api/login</span>) o crear cuenta (<span class="code">POST /api/register</span>), Laravel genera un <em>Personal Access Token</em> y lo devuelve junto con los datos del usuario.</li>
-  <li><strong>Persistencia e Interceptor en Android:</strong> <span class="code">SessionManager</span> almacena el token en <span class="code">SharedPreferences</span>. <span class="code">AuthInterceptor</span> (OkHttp) intercepta automáticamente todas las peticiones subsecuentes e inyecta <span class="code">Authorization: Bearer &lt;token&gt;</span> y <span class="code">Accept: application/json</span>.</li>
-  <li><strong>Tolerancia a fallos sin cierres inesperados (Crash-Free):</strong> Todas las llamadas pasan por <span class="code">safeApiCall</span> + <span class="code">ApiErrorParser</span>:
+  <li><strong>Laravel Sanctum:</strong> al autenticarse (<span class="code">POST /api/login</span>) o registrar cuenta (<span class="code">POST /api/register</span>), Laravel genera un <em>Personal Access Token</em> almacenado con hash en <span class="code">personal_access_tokens</span> y lo revoca al cerrar sesión (<span class="code">POST /api/logout</span>).</li>
+  <li><strong>Persistencia e Interceptor en Retrofit:</strong> <span class="code">SessionManager</span> persiste el token en <span class="code">SharedPreferences</span>. <span class="code">AuthInterceptor</span> intercepta cada petición de OkHttp e inyecta automáticamente <span class="code">Authorization: Bearer &lt;token&gt;</span> y <span class="code">Accept: application/json</span>.</li>
+  <li><strong>Manejo de errores sin cierres inesperados:</strong> todas las peticiones pasan por <span class="code">safeApiCall</span> y <span class="code">ApiErrorParser</span>:
     <ul>
-      <li><strong>HTTP 401:</strong> Muestra mensaje amigable en Login; en rutas protegidas limpia la sesión expirada y redirige al Login automáticamente.</li>
-      <li><strong>HTTP 422:</strong> Parsea el objeto JSON <span class="code">errors</span> de Laravel y marca el mensaje específico directamente sobre el campo del formulario correspondiente.</li>
-      <li><strong>Servidor caído / sin red (<span class="code">ConnectException</span>, <span class="code">SocketTimeoutException</span>):</strong> Captura la excepción con timeouts de 8–10 segundos y muestra un <span class="code">Snackbar</span> descriptivo sin cerrar la aplicación.</li>
+      <li><strong>HTTP 401:</strong> en inicio de sesión muestra aviso de credenciales inválidas; en vistas protegidas borra la sesión expirada y redirige al Login.</li>
+      <li><strong>HTTP 422:</strong> lee el objeto JSON <span class="code">errors</span> de Laravel y marca cada mensaje directamente en el campo de entrada afectado.</li>
+      <li><strong>Servidor caído / sin red:</strong> captura <span class="code">ConnectException</span> y <span class="code">SocketTimeoutException</span> (timeouts de 8–10 s) y presenta un aviso amigable mediante <span class="code">Snackbar</span> sin crashear.</li>
     </ul>
   </li>
 </ul>
 
 <h2>5. Principales Retos Técnicos y Cómo se Resolvieron</h2>
-<div class="grid-2">
-  <div class="card">
-    <h3>1. Bloqueo del Hilo Principal (Main Thread)</h3>
-    <p><strong>Reto:</strong> La versión offline original usaba <span class="code">runBlocking</span> en consultas síncronas, lo cual congelaría la interfaz (ANR) al introducir latencia de red con Retrofit.<br>
-    <strong>Solución:</strong> Se refactorizó todo el repositorio a funciones <span class="code">suspend</span> ejecutadas en <span class="code">Dispatchers.IO</span> y consumidas desde <span class="code">lifecycleScope.launch</span>, eliminando bloqueos y consultas N+1.</p>
-  </div>
-  <div class="card">
-    <h3>2. Inconsistencia de Vida Útil por Marca de EPP</h3>
-    <p><strong>Reto:</strong> Asignar múltiples equipos con una sola duración global producía vigencias irreales (misma caducidad para botas, arnés y guantes) y registros duplicados.<br>
-    <strong>Solución:</strong> Se rediseñó la entrega a modo individual con sugerencia STPS editable por fabricante, índice único <span class="code">(personal_id, epp_id)</span> en MySQL y cálculo real con <span class="code">Calendar</span>.</p>
-  </div>
-  <div class="card">
-    <h3>3. Integridad de Auditoría y Cruce Poka-Yoke</h3>
-    <p><strong>Reto:</strong> El validador no cruzaba caducidades reales del inventario y la bitácora mostraba el usuario logueado actual en lugar de quien firmó originalmente.<br>
-    <strong>Solución:</strong> Se vinculó <span class="code">ValidadorBlindo</span> a las asignaciones vigentes en servidor, se congeló el campo <span class="code">supervisor</span> por registro y se implementó SIMOPS dinámico por categoría de riesgo.</p>
-  </div>
-  <div class="card">
-    <h3>4. Entorno de Desarrollo, Red Local y PDF Nativo</h3>
-    <p><strong>Reto:</strong> Errores de <span class="code">jlink.exe</span> en Gradle/JDK, bloqueo de tráfico HTTP cleartext en Android 9+ hacia el emulador (<span class="code">10.0.2.2</span>) y ausencia de visor PDF en algunos emuladores.<br>
-    <strong>Solución:</strong> Se fijó el JDK JBR-25 en Gradle, se configuró <span class="code">network_security_config.xml</span> y se creó un generador PDF nativo (<span class="code">PdfDocument</span> + <span class="code">PdfRenderer</span>) con vista previa integrada.</p>
-  </div>
-</div>
+<table class="retos-table">
+  <thead>
+    <tr>
+      <th>Reto Técnico</th>
+      <th>Descripción del Problema y Solución Aplicada</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Bloqueo del hilo principal (Main Thread)</td>
+      <td>La versión inicial offline realizaba consultas síncronas con <span class="code">runBlocking</span>, lo cual causaría bloqueos (ANR) al incorporar peticiones HTTP. Se migró todo el repositorio a funciones <span class="code">suspend</span> en <span class="code">Dispatchers.IO</span> invocadas desde <span class="code">lifecycleScope.launch</span> y se añadió caché local para búsquedas sin saturar el servidor.</td>
+    </tr>
+    <tr>
+      <td>2. Consistencia de vigencias de EPP</td>
+      <td>Asignar varios equipos con una sola duración global producía fechas de caducidad irreales y registros repetidos. Se rediseñó la asignación a modo individual con sugerencia STPS editable por fabricante, restricción única <span class="code">(personal_id, epp_id)</span> en MySQL y cálculo real con <span class="code">Calendar</span>.</td>
+    </tr>
+    <tr>
+      <td>3. Integridad de bitácora y cruce SIMOPS</td>
+      <td>El validador no cruzaba vigencias reales del servidor y la bitácora mostraba al usuario logueado actual en lugar de quien autorizó la orden. Se conectó <span class="code">ValidadorBlindo</span> al inventario y órdenes activas en MySQL, congelando el campo <span class="code">supervisor</span> por registro e implementando detección SIMOPS por categoría de riesgo.</td>
+    </tr>
+    <tr>
+      <td>4. Red local, JDK y visor PDF con evidencia</td>
+      <td>Se presentaron bloqueos de tráfico HTTP en Android 9+ hacia <span class="code">10.0.2.2</span>, conflictos de <span class="code">jlink.exe</span> en Gradle y lectura limitada del PDF en pantallas pequeñas. Se configuró <span class="code">network_security_config.xml</span>, se fijó JBR-25 y se creó un generador PDF nativo (<span class="code">PdfDocument</span> + <span class="code">PdfRenderer</span> 3x) con visor a pantalla completa con zoom e integración de evidencia fotográfica.</td>
+    </tr>
+  </tbody>
+</table>
 
-<h2>6. Verificación Automatizada de la API</h2>
+<h2>6. Verificación y Pruebas Automatizadas</h2>
 <p>
-  Se implementó una prueba de integración completa (<span class="code">tests/Feature/BlindoApiTest.php</span>) que valida de forma automatizada el rechazo <span class="code">401</span> sin token, validación <span class="code">422</span> en formularios incompletos, emisión y revocación de tokens Sanctum, y el ciclo completo <span class="code">GET / POST / PUT / DELETE</span> sobre todas las tablas relacionadas.
+  Se implementó una prueba de integración de extremo a extremo (<span class="code">tests/Feature/BlindoApiTest.php</span>) ejecutada contra MySQL con <strong>35 aserciones aprobadas</strong>, verificando rechazo <span class="code">401</span> sin token, validación <span class="code">422</span> en formularios, emisión/revocación de tokens Sanctum y operaciones completas <span class="code">GET / POST / PUT / DELETE</span> en todas las entidades. Adicionalmente se validó la app en vivo sobre el emulador Android verificando cambios en tiempo real desde phpMyAdmin.
 </p>
 
 <div class="footer">
-  Blindo SGC · Documentación Técnica del Proyecto Integrador (Android Kotlin + Laravel 12 Sanctum + MySQL) · Repositorio: https://github.com/Pablo21I/blindo-sgc
+  <span>Blindo SGC — Documentación Técnica</span>
+  <span>Pablo Isaac Navarro Mendoza · Android (Kotlin) + Laravel 12 + MySQL</span>
 </div>
 
 </body>

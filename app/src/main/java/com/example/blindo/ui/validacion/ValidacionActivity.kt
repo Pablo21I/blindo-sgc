@@ -29,6 +29,8 @@ import com.example.blindo.data.session.SessionManager
 import com.example.blindo.databinding.ActivityValidacionBinding
 import com.example.blindo.domain.ResultadoValidacion
 import com.example.blindo.domain.ValidadorBlindo
+import com.example.blindo.ui.BlindoNotice
+import com.example.blindo.ui.InputValidators
 import com.example.blindo.ui.resultado.ResultadoSemaforoActivity
 import com.example.blindo.ui.showExpanded
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -95,7 +97,7 @@ class ValidacionActivity : AppCompatActivity() {
                 if (bmp != null) {
                     guardarYMostrarEvidencia(bmp)
                 } else {
-                    Toast.makeText(this@ValidacionActivity, "No se pudo leer la imagen", Toast.LENGTH_SHORT).show()
+                    BlindoNotice.alerta(this@ValidacionActivity, "Imagen no compatible", "No se pudo leer la foto seleccionada.")
                 }
             }
         }
@@ -212,7 +214,7 @@ class ValidacionActivity : AppCompatActivity() {
     ) {
         val personalRes = MockBlindoRepository.getPersonalResult()
         val todoPersonal = personalRes.getOrElse { err ->
-            Toast.makeText(this, err.message ?: "No se pudo cargar el personal del servidor", Toast.LENGTH_LONG).show()
+            BlindoNotice.error(this, "Sin conexión", err.message ?: "No se pudo cargar la plantilla de personal.")
             emptyList()
         }
 
@@ -299,7 +301,7 @@ class ValidacionActivity : AppCompatActivity() {
             try {
                 cameraLauncher.launch(null)
             } catch (_: Exception) {
-                Toast.makeText(this, "Cámara no disponible en este dispositivo", Toast.LENGTH_SHORT).show()
+                BlindoNotice.alerta(this, "Cámara no disponible", "Este dispositivo no tiene cámara activa; usa Galería.")
             }
         }
 
@@ -314,7 +316,7 @@ class ValidacionActivity : AppCompatActivity() {
         binding.btnMarcarObligatorios.setOnClickListener {
             eppAdapter.checkAllObligatorios()
             actualizarContadorEpp()
-            Toast.makeText(this, "Equipos obligatorios seleccionados", Toast.LENGTH_SHORT).show()
+            BlindoNotice.info(this, "Lista completa", "Todos los equipos obligatorios fueron marcados.")
         }
 
         binding.switchEppEstado.setOnCheckedChangeListener { _, isChecked ->
@@ -333,11 +335,11 @@ class ValidacionActivity : AppCompatActivity() {
     // Corre el validador de seguridad (EPP, caducidad y SIMOPS) y abre la pantalla de Semáforo
     private fun ejecutarValidacion() {
         if (operadoresLista.isEmpty() || supervisoresLista.isEmpty()) {
-            Toast.makeText(this, "Registra al menos 1 Operador y 1 Supervisor usando '+ Nuevo'", Toast.LENGTH_LONG).show()
+            BlindoNotice.alerta(this, "Falta personal", "Registra al menos un Operador y un Supervisor con '+ Nuevo'.")
             return
         }
         if (zonas.isEmpty()) {
-            Toast.makeText(this, "Registra al menos una zona de trabajo", Toast.LENGTH_SHORT).show()
+            BlindoNotice.alerta(this, "Falta zona", "Agrega al menos una zona de trabajo para continuar.")
             return
         }
 
@@ -457,23 +459,29 @@ class ValidacionActivity : AppCompatActivity() {
                 val riesgo = spinnerRiesgo.selectedItem.toString()
                 val categoria = categoriasSimops[spinnerCategoria.selectedItemPosition].second
 
-                if (nombre.isEmpty() || norma.isEmpty()) {
-                    Toast.makeText(this@ValidacionActivity, "Complete nombre y norma de la tarea", Toast.LENGTH_SHORT).show()
+                InputValidators.validarTextoDescriptivo(nombre, "la tarea")?.let { errMsg ->
+                    etNombre.error = errMsg
+                    BlindoNotice.alerta(this@ValidacionActivity, "Nombre inválido", errMsg, window = dialog.window)
+                    return@setOnClickListener
+                }
+                InputValidators.validarTextoDescriptivo(norma, "la norma")?.let { errMsg ->
+                    etNorma.error = errMsg
+                    BlindoNotice.alerta(this@ValidacionActivity, "Norma inválida", errMsg, window = dialog.window)
                     return@setOnClickListener
                 }
 
                 val eppsSeleccionados = checkBoxesEpp.filter { it.value.isChecked }.keys.toList()
                 if (eppsSeleccionados.isEmpty()) {
-                    Toast.makeText(this@ValidacionActivity, "Selecciona al menos un EPP obligatorio", Toast.LENGTH_SHORT).show()
+                    BlindoNotice.alerta(this@ValidacionActivity, "Selecciona EPP", "Marca al menos un equipo obligatorio para esta tarea.", window = dialog.window)
                     return@setOnClickListener
                 }
 
                 lifecycleScope.launch {
                     MockBlindoRepository.agregarNuevoTrabajo(nombre, norma, riesgo, categoria, eppsSeleccionados)
-                    Toast.makeText(this@ValidacionActivity, "Nueva tarea registrada: $nombre", Toast.LENGTH_SHORT).show()
                     trabajoSeleccionado = null
                     cargarTrabajosSelectorVisual()
                     dialog.dismiss()
+                    BlindoNotice.exito(this@ValidacionActivity, "Tarea agregada", "'$nombre' ya está disponible para validar.")
                 }
             }
 
@@ -491,8 +499,9 @@ class ValidacionActivity : AppCompatActivity() {
 
         btnGuardar.setOnClickListener {
             val nombre = etNombreZona.text.toString().trim()
-            if (nombre.isEmpty()) {
-                etNombreZona.error = "Ingrese el nombre de la zona"
+            InputValidators.validarTextoDescriptivo(nombre, "la zona")?.let { errMsg ->
+                etNombreZona.error = errMsg
+                BlindoNotice.alerta(this, "Nombre de zona inválido", errMsg, window = dialog.window)
                 return@setOnClickListener
             }
 
@@ -500,8 +509,8 @@ class ValidacionActivity : AppCompatActivity() {
                 val res = MockBlindoRepository.agregarZona(nombre)
                 res.onSuccess {
                     cargarZonasYTurnos(seleccionarZona = nombre)
-                    Toast.makeText(this@ValidacionActivity, "Zona agregada: $nombre", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
+                    BlindoNotice.exito(this@ValidacionActivity, "Zona agregada", "'$nombre' fue añadida y seleccionada.")
                 }.onFailure { err ->
                     etNombreZona.error = err.message ?: "No se pudo agregar"
                 }
@@ -525,16 +534,20 @@ class ValidacionActivity : AppCompatActivity() {
         tvTitulo.text = if (rolPorDefecto == "OPERADOR") "Nuevo operador" else "Nuevo supervisor"
         btnGuardar.text = "Guardar y seleccionar"
         toggleRol.check(if (rolPorDefecto == "SUPERVISOR") R.id.btnRolSupModal else R.id.btnRolOpModal)
+        InputValidators.aplicarFiltroSoloNombre(etNombre)
+        InputValidators.aplicarFiltroCodigoEmpleado(etId)
 
         btnGuardar.setOnClickListener {
             val nombre = etNombre.text.toString().trim()
             val idStr = etId.text.toString().trim()
-            if (nombre.length < 3) {
-                etNombre.error = "Ingresa el nombre completo"
+            InputValidators.validarNombrePersona(nombre)?.let { errMsg ->
+                etNombre.error = errMsg
+                BlindoNotice.alerta(this, "Nombre inválido", errMsg, window = dialog.window)
                 return@setOnClickListener
             }
-            if (idStr.isEmpty()) {
-                etId.error = "Ingresa el No. de Empleado"
+            InputValidators.validarNumeroEmpleado(idStr)?.let { errMsg ->
+                etId.error = errMsg
+                BlindoNotice.alerta(this, "Código inválido", errMsg, window = dialog.window)
                 return@setOnClickListener
             }
 
@@ -552,14 +565,16 @@ class ValidacionActivity : AppCompatActivity() {
                         preseleccionarOperadorId = if (rol == "OPERADOR") nuevo.id else null,
                         preseleccionarSupervisorId = if (rol == "SUPERVISOR") nuevo.id else null
                     )
-                    Toast.makeText(this@ValidacionActivity, "Registrado: ${nuevo.nombre}", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
+                    BlindoNotice.exito(this@ValidacionActivity, "Personal registrado", "${nuevo.nombre} fue seleccionado automáticamente.")
                 }.onFailure { err ->
                     if (err is ApiException && err.fieldErrors.isNotEmpty()) {
                         err.fieldErrors["nombre"]?.let { etNombre.error = it }
                         err.fieldErrors["numero_empleado"]?.let { etId.error = it }
+                        BlindoNotice.alerta(this@ValidacionActivity, "Revisa los datos", err.message, window = dialog.window)
+                    } else {
+                        BlindoNotice.error(this@ValidacionActivity, "No se pudo registrar", err.message ?: "Intenta nuevamente.", window = dialog.window)
                     }
-                    Toast.makeText(this@ValidacionActivity, err.message ?: "No se pudo registrar", Toast.LENGTH_LONG).show()
                 }
             }
         }

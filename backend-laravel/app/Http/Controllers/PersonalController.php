@@ -31,14 +31,17 @@ class PersonalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'nombre' => 'required|string|min:3|max:120',
+            'nombre' => ['required', 'string', 'min:3', 'max:120', 'regex:/^[\pL][\pL\s.]*$/u'],
             'rol' => 'required|in:OPERADOR,SUPERVISOR',
-            'numero_empleado' => 'required|string|max:50|unique:personals,numero_empleado',
+            'numero_empleado' => ['required', 'string', 'min:3', 'max:20', 'regex:/^[A-Z0-9_-]+$/', 'unique:personals,numero_empleado'],
         ], [
             'nombre.required' => 'El nombre completo es obligatorio.',
-            'nombre.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'nombre.min' => 'El nombre debe tener al menos 3 letras.',
+            'nombre.regex' => 'El nombre solo debe contener letras y espacios (sin números ni símbolos).',
             'rol.in' => 'El rol debe ser OPERADOR o SUPERVISOR.',
             'numero_empleado.required' => 'El número de empleado es obligatorio.',
+            'numero_empleado.min' => 'El número de empleado debe tener al menos 3 caracteres.',
+            'numero_empleado.regex' => 'El número de empleado solo acepta letras, números o guiones (ej. OP-201).',
             'numero_empleado.unique' => 'Ese número de empleado ya está registrado.',
         ]);
 
@@ -67,16 +70,22 @@ class PersonalController extends Controller
         ]);
 
         $validated = $request->validate([
-            'nombre' => 'required|string|min:3|max:120',
+            'nombre' => ['required', 'string', 'min:3', 'max:120', 'regex:/^[\pL][\pL\s.]*$/u'],
             'rol' => 'required|in:OPERADOR,SUPERVISOR',
             'numero_empleado' => [
                 'required',
                 'string',
-                'max:50',
+                'min:3',
+                'max:20',
+                'regex:/^[A-Z0-9_-]+$/',
                 Rule::unique('personals', 'numero_empleado')->ignore($personal->id),
             ],
         ], [
             'nombre.required' => 'El nombre completo es obligatorio.',
+            'nombre.min' => 'El nombre debe tener al menos 3 letras.',
+            'nombre.regex' => 'El nombre solo debe contener letras y espacios (sin números ni símbolos).',
+            'numero_empleado.min' => 'El número de empleado debe tener al menos 3 caracteres.',
+            'numero_empleado.regex' => 'El número de empleado solo acepta letras, números o guiones.',
             'numero_empleado.unique' => 'Ese número de empleado pertenece a otro trabajador.',
         ]);
 

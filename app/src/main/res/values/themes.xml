@@ -66,6 +66,19 @@
         <item name="hintEnabled">false</item>
     </style>
 
+    <!-- Diálogo flotante centrado propio de Blindo (con fondo oscurecido y esquinas limpias) -->
+    <style name="Theme.Blindo.Dialog" parent="Theme.Material3.Dark.Dialog">
+        <item name="colorPrimary">@color/industrial_accent</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/industrial_card</item>
+        <item name="colorOnSurface">@color/industrial_text_primary</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.72</item>
+    </style>
+
     <!-- Botón segmentado con estado activo claro -->
     <style name="Blindo.ToggleButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="backgroundTint">@color/toggle_btn_bg_selector</item>

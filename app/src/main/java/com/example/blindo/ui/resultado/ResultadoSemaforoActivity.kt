@@ -17,6 +17,7 @@ import com.example.blindo.data.session.EvidenciaStore
 import com.example.blindo.databinding.ActivityResultadoBinding
 import com.example.blindo.domain.DatosPermisoPdf
 import com.example.blindo.domain.PermisoPdfGenerator
+import com.example.blindo.ui.BlindoNotice
 import com.example.blindo.ui.PdfPreviewDialogHelper
 import com.example.blindo.ui.showExpanded
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -122,14 +123,13 @@ class ResultadoSemaforoActivity : AppCompatActivity() {
             binding.btnAccionPrimaria.isEnabled = false
             lifecycleScope.launch {
                 val iniciarEnPiso = (estado == "VERDE" || estado == "AMARILLO")
-                val nota = if (iniciarEnPiso) "Orden iniciada en piso: $mensaje" else mensaje
                 val res = enviarValidacionAlServidor(
                     personalId, trabajador, supervisor, turno, zona, trabajoId,
-                    nombreTrabajo, estado, activa = iniciarEnPiso, notas = nota,
+                    nombreTrabajo, estado, activa = iniciarEnPiso, notas = mensaje,
                     folio = folio, evidenciaPath = evidenciaPath, eppsNombres = eppsNombres
                 )
                 res.onFailure { err ->
-                    Toast.makeText(this@ResultadoSemaforoActivity, err.message ?: "Error al guardar en servidor", Toast.LENGTH_LONG).show()
+                    BlindoNotice.error(this@ResultadoSemaforoActivity, "No se pudo guardar", err.message ?: "Verifica tu conexión e intenta de nuevo.")
                 }
                 setResult(Activity.RESULT_OK)
                 finish()
@@ -189,13 +189,13 @@ class ResultadoSemaforoActivity : AppCompatActivity() {
             }
 
             if (resultado == null) {
-                Toast.makeText(this@ResultadoSemaforoActivity, "Error al generar el PDF", Toast.LENGTH_SHORT).show()
+                BlindoNotice.error(this@ResultadoSemaforoActivity, "No se pudo crear el PDF", "Intenta generar el permiso nuevamente.")
                 return@launch
             }
 
             val (pdfFile, previewBitmap) = resultado
             if (previewBitmap == null) {
-                Toast.makeText(this@ResultadoSemaforoActivity, "No se pudo renderizar la vista previa", Toast.LENGTH_SHORT).show()
+                BlindoNotice.error(this@ResultadoSemaforoActivity, "Vista previa no disponible", "No se pudo mostrar la hoja del permiso.")
                 return@launch
             }
             PdfPreviewDialogHelper.mostrar(

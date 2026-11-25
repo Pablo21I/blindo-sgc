@@ -28,7 +28,7 @@ class OrdenesAdapter(
 
             val isVerde = orden.estado == "VERDE"
             val statusColor = ContextCompat.getColor(context, if (isVerde) R.color.status_green else R.color.status_yellow)
-            val statusBgTint = if (isVerde) Color.parseColor("#1A00C896") else Color.parseColor("#1AFFB020")
+            val statusBgTint = ContextCompat.getColor(context, if (isVerde) R.color.status_green_bg else R.color.status_yellow_bg)
 
             binding.viewEstadoStripe.setBackgroundColor(statusColor)
             binding.ivTaskIcon.backgroundTintList = ColorStateList.valueOf(statusBgTint)

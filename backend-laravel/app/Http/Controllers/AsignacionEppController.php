@@ -28,10 +28,11 @@ class AsignacionEppController extends Controller
             'personal_id' => 'required|integer|exists:personals,id',
             'epp_id' => 'required|integer|min:1',
             'nombre_epp' => 'required|string|max:160',
-            'vida_util_meses_asignada' => 'required|integer|min:1',
+            'vida_util_meses_asignada' => 'required|integer|min:1|max:9999',
         ], [
-            'personal_id.exists' => 'El trabajador seleccionado no existe en el servidor.',
+            'personal_id.exists' => 'El trabajador seleccionado no existe.',
             'vida_util_meses_asignada.min' => 'La vida útil debe ser mayor a 0.',
+            'vida_util_meses_asignada.max' => 'La vida útil excede el máximo permitido.',
         ]);
 
         $existente = AsignacionEpp::where('personal_id', $validated['personal_id'])
@@ -73,7 +74,7 @@ class AsignacionEppController extends Controller
     public function update(Request $request, AsignacionEpp $asignacionEpp)
     {
         $validated = $request->validate([
-            'vida_util_meses_asignada' => 'sometimes|integer|min:1',
+            'vida_util_meses_asignada' => 'sometimes|integer|min:1|max:9999',
             'renovar' => 'sometimes|boolean',
         ]);
 

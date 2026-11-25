@@ -44,8 +44,9 @@ class InventarioEppAdapter(
                 }
                 EstadoEpp.CADUCADO -> {
                     val red = ContextCompat.getColor(context, R.color.status_red)
-                    val diasPasados = -detalle.diasRestantes
-                    binding.tvDiasRestantes.text = "Caducado hace $diasPasados días"
+                    val diasPasados = (-detalle.diasRestantes).coerceAtLeast(1)
+                    val txtDias = if (diasPasados == 1) "1 día" else "$diasPasados días"
+                    binding.tvDiasRestantes.text = "Caducado hace $txtDias"
                     binding.tvDiasRestantes.setTextColor(red)
                     binding.tvDiasRestantes.setBackgroundResource(R.drawable.bg_pill_red)
                     stripeView.backgroundTintList = ColorStateList.valueOf(red)
@@ -55,7 +56,8 @@ class InventarioEppAdapter(
                 }
                 EstadoEpp.ALERTA -> {
                     val yellow = ContextCompat.getColor(context, R.color.status_yellow)
-                    binding.tvDiasRestantes.text = "Por vencer · ${detalle.diasRestantes} días"
+                    val txtDias = if (detalle.diasRestantes == 1) "1 día" else "${detalle.diasRestantes} días"
+                    binding.tvDiasRestantes.text = "Por vencer · $txtDias"
                     binding.tvDiasRestantes.setTextColor(yellow)
                     binding.tvDiasRestantes.setBackgroundResource(R.drawable.bg_pill_yellow)
                     stripeView.backgroundTintList = ColorStateList.valueOf(yellow)
@@ -67,7 +69,12 @@ class InventarioEppAdapter(
                     val green = ContextCompat.getColor(context, R.color.status_green)
                     val accent = ContextCompat.getColor(context, R.color.industrial_accent_glow)
                     val mesesRestantes = detalle.diasRestantes / 30
-                    val textoTiempo = if (mesesRestantes >= 1) "~$mesesRestantes meses" else "${detalle.diasRestantes} días"
+                    val textoTiempo = when {
+                        mesesRestantes == 1 -> "~1 mes"
+                        mesesRestantes > 1 -> "~$mesesRestantes meses"
+                        detalle.diasRestantes == 1 -> "1 día"
+                        else -> "${detalle.diasRestantes} días"
+                    }
                     binding.tvDiasRestantes.text = "Vigente · $textoTiempo restantes"
                     binding.tvDiasRestantes.setTextColor(green)
                     binding.tvDiasRestantes.setBackgroundResource(R.drawable.bg_pill_green)

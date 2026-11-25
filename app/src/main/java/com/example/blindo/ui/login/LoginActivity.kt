@@ -12,6 +12,8 @@ import com.example.blindo.data.remote.ApiException
 import com.example.blindo.data.repository.MockBlindoRepository
 import com.example.blindo.data.session.SessionManager
 import com.example.blindo.databinding.ActivityLoginBinding
+import com.example.blindo.ui.BlindoNotice
+import com.example.blindo.ui.InputValidators
 import com.example.blindo.ui.main.MainActivity
 import com.example.blindo.ui.showExpanded
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -42,6 +44,14 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        InputValidators.aplicarFiltroCodigoEmpleado(binding.etUsuario)
+
+        intent.getStringExtra("AVISO_SESION")?.takeIf { it.isNotBlank() }?.let { aviso ->
+            binding.root.post {
+                BlindoNotice.alerta(this, "Sesión finalizada", aviso)
+            }
+        }
 
         lifecycleScope.launch {
             MockBlindoRepository.ensureCatalogosNormativos()
@@ -80,25 +90,36 @@ class LoginActivity : AppCompatActivity() {
                     rol = usuario.rol,
                     token = sanctumToken
                 )
-                Toast.makeText(this@LoginActivity, "Bienvenido, ${usuario.nombre}", Toast.LENGTH_SHORT).show()
-                irADashboard()
+                val saludo = usuario.nombre.trim().split(Regex("\\s+")).take(2).joinToString(" ")
+                irADashboard(
+                    bienvenidaTitulo = "¡Bienvenido, $saludo!",
+                    bienvenidaSub = "Sesión iniciada · Piso listo para supervisar"
+                )
             }.onFailure { err ->
                 binding.btnLogin.text = "Entrar al sistema"
                 binding.progressLogin.visibility = View.GONE
                 binding.btnLogin.isEnabled = true
 
                 val apiErr = err as? ApiException
-                if (apiErr != null && apiErr.statusCode == 422) {
-                    // Muestra errores reales de validación 422 enviados por Laravel
-                    apiErr.fieldErrors["numero_empleado"]?.let { binding.tilUsuario.error = it }
-                    apiErr.fieldErrors["password"]?.let { binding.tilPassword.error = it }
-                    Snackbar.make(binding.root, apiErr.message, Snackbar.LENGTH_LONG).show()
-                } else {
-                    // Maneja 401 (credenciales incorrectas) y servidor caído sin crashear
-                    val mensaje = err.message ?: "Error al iniciar sesión"
-                    Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG).show()
-                    if (apiErr?.statusCode == 401) {
+                when (apiErr?.statusCode) {
+                    422 -> {
+                        apiErr.fieldErrors["numero_empleado"]?.let { binding.tilUsuario.error = it }
+                        apiErr.fieldErrors["password"]?.let { binding.tilPassword.error = it }
+                        BlindoNotice.alerta(this@LoginActivity, "Completa tus datos", apiErr.message)
+                    }
+                    401 -> {
                         binding.etPassword.text?.clear()
+                        BlindoNotice.error(this@LoginActivity, "Acceso denegado", apiErr.message)
+                    }
+                    0 -> {
+                        BlindoNotice.error(this@LoginActivity, "Sin conexión", apiErr.message)
+                    }
+                    else -> {
+                        BlindoNotice.error(
+                            this@LoginActivity,
+                            "No se pudo iniciar sesión",
+                            err.message ?: "Intenta nuevamente en unos segundos."
+                        )
                     }
                 }
             }
@@ -118,6 +139,10 @@ class LoginActivity : AppCompatActivity() {
         val etPassConfirm = view.findViewById<TextInputEditText>(R.id.etRegPasswordConfirm)
         val btnCrear = view.findViewById<MaterialButton>(R.id.btnCrearCuentaConfirm)
 
+        // Bloquea números en el nombre y caracteres inválidos en el código de empleado al escribir
+        InputValidators.aplicarFiltroSoloNombre(etNombre)
+        InputValidators.aplicarFiltroCodigoEmpleado(etEmp)
+
         btnCrear.setOnClickListener {
             val nombre = etNombre.text.toString().trim()
             val numEmp = etEmp.text.toString().trim()
@@ -129,8 +154,24 @@ class LoginActivity : AppCompatActivity() {
             etPass.error = null
             etPassConfirm.error = null
 
-            if (pass.isNotEmpty() && pass != passConfirm) {
+            InputValidators.validarNombrePersona(nombre)?.let { errMsg ->
+                etNombre.error = errMsg
+                BlindoNotice.alerta(this, "Nombre inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
+            InputValidators.validarNumeroEmpleado(numEmp)?.let { errMsg ->
+                etEmp.error = errMsg
+                BlindoNotice.alerta(this, "Número de empleado inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
+            if (pass.length < 4) {
+                etPass.error = "La contraseña debe tener al menos 4 caracteres."
+                BlindoNotice.alerta(this, "Contraseña muy corta", "Usa al menos 4 caracteres o dígitos.", window = dialog.window)
+                return@setOnClickListener
+            }
+            if (pass != passConfirm) {
                 etPassConfirm.error = "Las contraseñas no coinciden"
+                BlindoNotice.alerta(this, "Revisa tu contraseña", "Las contraseñas no coinciden.", window = dialog.window)
                 return@setOnClickListener
             }
 
@@ -148,9 +189,12 @@ class LoginActivity : AppCompatActivity() {
                         rol = usuario.rol,
                         token = sanctumToken
                     )
-                    Toast.makeText(this@LoginActivity, "Cuenta creada. Bienvenido, ${usuario.nombre}", Toast.LENGTH_SHORT).show()
+                    val saludo = usuario.nombre.trim().split(Regex("\\s+")).take(2).joinToString(" ")
                     dialog.dismiss()
-                    irADashboard()
+                    irADashboard(
+                        bienvenidaTitulo = "¡Cuenta creada, $saludo!",
+                        bienvenidaSub = "Ya puedes gestionar personal, EPP y permisos en piso"
+                    )
                 }.onFailure { err ->
                     btnCrear.isEnabled = true
                     val apiErr = err as? ApiException
@@ -158,9 +202,14 @@ class LoginActivity : AppCompatActivity() {
                         apiErr.fieldErrors["name"]?.let { etNombre.error = it }
                         apiErr.fieldErrors["numero_empleado"]?.let { etEmp.error = it }
                         apiErr.fieldErrors["password"]?.let { etPass.error = it }
-                        Toast.makeText(this@LoginActivity, apiErr.message, Toast.LENGTH_LONG).show()
+                        BlindoNotice.alerta(this@LoginActivity, "Revisa tus datos", apiErr.message, window = dialog.window)
                     } else {
-                        Toast.makeText(this@LoginActivity, err.message ?: "Error al registrar cuenta", Toast.LENGTH_LONG).show()
+                        BlindoNotice.error(
+                            this@LoginActivity,
+                            "No se pudo crear la cuenta",
+                            err.message ?: "Verifica tu conexión e intenta de nuevo.",
+                            window = dialog.window
+                        )
                     }
                 }
             }
@@ -169,8 +218,12 @@ class LoginActivity : AppCompatActivity() {
         dialog.showExpanded()
     }
 
-    private fun irADashboard() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun irADashboard(bienvenidaTitulo: String? = null, bienvenidaSub: String? = null) {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            if (!bienvenidaTitulo.isNullOrBlank()) putExtra("BIENVENIDA_TITULO", bienvenidaTitulo)
+            if (!bienvenidaSub.isNullOrBlank()) putExtra("BIENVENIDA_SUB", bienvenidaSub)
+        }
+        startActivity(intent)
         finish()
     }
 }

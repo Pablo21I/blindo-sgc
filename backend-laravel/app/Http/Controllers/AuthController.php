@@ -22,14 +22,17 @@ class AuthController extends Controller
         ]);
 
         $validated = $request->validate([
-            'name' => 'required|string|min:3|max:120',
-            'numero_empleado' => 'required|string|max:50|unique:users,numero_empleado',
-            'password' => 'required|string|min:4',
+            'name' => ['required', 'string', 'min:3', 'max:120', 'regex:/^[\pL][\pL\s.]*$/u'],
+            'numero_empleado' => ['required', 'string', 'min:3', 'max:20', 'regex:/^[A-Z0-9_-]+$/', 'unique:users,numero_empleado'],
+            'password' => 'required|string|min:4|max:40',
             'rol' => 'nullable|in:ADMIN,SUPERVISOR',
         ], [
             'name.required' => 'El nombre completo es obligatorio.',
-            'name.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'name.min' => 'El nombre debe tener al menos 3 letras.',
+            'name.regex' => 'El nombre solo debe contener letras y espacios (sin números ni símbolos).',
             'numero_empleado.required' => 'El número de empleado es obligatorio.',
+            'numero_empleado.min' => 'El número de empleado debe tener al menos 3 caracteres.',
+            'numero_empleado.regex' => 'El número de empleado solo acepta letras, números o guiones (ej. SUP-001).',
             'numero_empleado.unique' => 'Ya existe una cuenta registrada con ese número de empleado.',
             'password.required' => 'La contraseña o PIN es obligatorio.',
             'password.min' => 'La contraseña debe tener al menos 4 caracteres.',

@@ -70,6 +70,18 @@
                 android:contentDescription="Cerrar Sesión"/>
         </LinearLayout>
 
+        <!-- Barra fina de sincronización (invisible cuando está inactiva para no mover el diseño) -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressSyncTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:trackThickness="2.5dp"
+            app:trackColor="@android:color/transparent"
+            app:indicatorColor="@color/industrial_accent"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+
         <!-- PESTAÑA 1: TALLER -->
         <LinearLayout
             android:id="@+id/layoutTabTaller"

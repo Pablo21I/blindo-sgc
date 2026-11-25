@@ -74,5 +74,13 @@
             android:background="@drawable/bg_pill_accent"
             tools:text="OPERADOR" />
 
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="6dp"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/industrial_text_muted"
+            android:contentDescription="Ver detalle" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

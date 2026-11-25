@@ -20,7 +20,7 @@ class PersonalAdapter(
             binding.tvNombre.text = personal.nombre
             binding.tvNumEmpleado.text = "ID: ${personal.numeroEmpleado}"
 
-            val partes = personal.nombre.trim().split(" ")
+            val partes = personal.nombre.trim().split(Regex("\\s+")).filter { it.isNotBlank() }
             val iniciales = if (partes.size >= 2) {
                 "${partes[0].firstOrNull() ?: ""}${partes[1].firstOrNull() ?: ""}".uppercase()
             } else {

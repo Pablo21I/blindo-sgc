@@ -1,5 +1,7 @@
 package com.example.blindo.ui.main
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -31,6 +33,9 @@ import com.example.blindo.domain.DatosPermisoPdf
 import com.example.blindo.domain.EppDateUtils
 import com.example.blindo.domain.EstadoEpp
 import com.example.blindo.domain.PermisoPdfGenerator
+import com.example.blindo.ui.BlindoConfirmDialog
+import com.example.blindo.ui.BlindoNotice
+import com.example.blindo.ui.InputValidators
 import com.example.blindo.ui.PdfPreviewDialogHelper
 import com.example.blindo.ui.historial.HistorialAdapter
 import com.example.blindo.ui.login.LoginActivity
@@ -74,6 +79,8 @@ class MainActivity : AppCompatActivity() {
     private var cacheBitacora: List<RegistroAuditoria> = emptyList()
     private var cachePersonal: List<Personal> = emptyList()
     private var cacheInventario: List<AsignacionEppDetalle> = emptyList()
+    private var heroPulseAnimator: ObjectAnimator? = null
+    private var peticionesActivas: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,14 +99,57 @@ class MainActivity : AppCompatActivity() {
         val saludoCorto = nombreUsuario.trim().split(Regex("\\s+")).take(2).joinToString(" ")
         binding.tvHeaderTitle.text = "Hola, $saludoCorto"
 
+        val bienvenidaTitulo = intent.getStringExtra("BIENVENIDA_TITULO")
+        val bienvenidaSub = intent.getStringExtra("BIENVENIDA_SUB")
+        if (!bienvenidaTitulo.isNullOrBlank()) {
+            binding.root.post {
+                BlindoNotice.exito(
+                    this,
+                    bienvenidaTitulo,
+                    bienvenidaSub ?: "Piso listo para supervisar",
+                    duracionMs = 3400L
+                )
+            }
+        }
+
         setupRecyclerViews()
         setupListeners()
         setupBottomNavigation()
+        iniciarPulsoEnVivo()
     }
 
     override fun onResume() {
         super.onResume()
         recargarTodo()
+    }
+
+    override fun onDestroy() {
+        heroPulseAnimator?.cancel()
+        heroPulseAnimator = null
+        super.onDestroy()
+    }
+
+    // Animación de respiración suave en el indicador en vivo del panel principal
+    private fun iniciarPulsoEnVivo() {
+        heroPulseAnimator?.cancel()
+        heroPulseAnimator = ObjectAnimator.ofFloat(binding.viewHeroPulse, View.ALPHA, 1f, 0.3f).apply {
+            duration = 1150L
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            start()
+        }
+    }
+
+    private fun mostrarBarraSync(activa: Boolean) {
+        if (activa) {
+            peticionesActivas++
+            binding.progressSyncTop.visibility = View.VISIBLE
+        } else {
+            peticionesActivas = (peticionesActivas - 1).coerceAtLeast(0)
+            if (peticionesActivas == 0) {
+                binding.progressSyncTop.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun recargarTodo() {
@@ -115,19 +165,18 @@ class MainActivity : AppCompatActivity() {
     private fun manejarErrorApi(err: Throwable) {
         val apiErr = err as? ApiException
         if (apiErr?.statusCode == 401) {
-            irALoginPorSesionExpirada("Tu sesión expiró (401). Vuelve a iniciar sesión.")
+            irALoginPorSesionExpirada("Tu sesión expiró por seguridad. Vuelve a iniciar sesión.")
             return
         }
-        Snackbar.make(binding.root, err.message ?: "Error de conexión con el servidor", Snackbar.LENGTH_LONG).show()
+        val titulo = if (apiErr?.statusCode == 0) "Sin conexión" else "No se pudo completar"
+        BlindoNotice.error(this, titulo, err.message ?: "Verifica tu conexión e intenta de nuevo.")
     }
 
     private fun irALoginPorSesionExpirada(mensaje: String?) {
         SessionManager.clearSession(this)
-        if (!mensaje.isNullOrBlank()) {
-            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
-        }
         val intent = Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            if (!mensaje.isNullOrBlank()) putExtra("AVISO_SESION", mensaje)
         }
         startActivity(intent)
         finish()
@@ -183,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             zonaFiltroSeleccionada = "Todas"
             (binding.chipGroupZonas.getChildAt(0) as? Chip)?.isChecked = true
             aplicarFiltroTaller()
-            Toast.makeText(this, "Mostrando todas las órdenes activas", Toast.LENGTH_SHORT).show()
+            BlindoNotice.info(this, "Vista general", "Mostrando todas las órdenes activas en piso")
         }
 
         binding.kpiAlertasContainer.setOnClickListener {
@@ -197,17 +246,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnLogout.setOnClickListener {
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Cerrar sesión")
-                .setMessage("¿Deseas cerrar tu sesión actual y revocar el token Sanctum?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Cerrar sesión") { _, _ ->
-                    lifecycleScope.launch {
-                        MockBlindoRepository.cerrarSesionServidor()
-                        irALoginPorSesionExpirada(null)
-                    }
+            BlindoConfirmDialog.mostrar(
+                activity = this,
+                titulo = "Cerrar sesión",
+                mensaje = "¿Deseas cerrar tu sesión en este dispositivo?",
+                textoConfirmar = "Cerrar sesión",
+                estilo = BlindoConfirmDialog.Estilo.PELIGRO,
+                iconoRes = R.drawable.ic_logout
+            ) { cerrarDialogo ->
+                lifecycleScope.launch {
+                    MockBlindoRepository.cerrarSesionServidor()
+                    cerrarDialogo()
+                    irALoginPorSesionExpirada(null)
                 }
-                .show()
+            }
         }
 
         binding.etBuscarPersonalTab.addTextChangedListener(object : TextWatcher {
@@ -341,16 +393,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun updateDashboardYBitacora() {
-        MockBlindoRepository.getValidacionesSeparadasResult()
-            .onSuccess { (activas, auditorias) ->
-                cacheOrdenes = activas
-                cacheBitacora = auditorias
-                aplicarFiltroTaller()
-                aplicarFiltroBitacora()
-            }
-            .onFailure { err ->
-                manejarErrorApi(err)
-            }
+        mostrarBarraSync(true)
+        try {
+            MockBlindoRepository.getValidacionesSeparadasResult()
+                .onSuccess { (activas, auditorias) ->
+                    cacheOrdenes = activas
+                    cacheBitacora = auditorias
+                    aplicarFiltroTaller()
+                    aplicarFiltroBitacora()
+                }
+                .onFailure { err ->
+                    manejarErrorApi(err)
+                }
+        } finally {
+            mostrarBarraSync(false)
+        }
     }
 
     private fun aplicarFiltroTaller() {
@@ -425,14 +482,19 @@ class MainActivity : AppCompatActivity() {
 
     // Descarga la plantilla de personal desde Laravel y aplica el filtro actual
     private suspend fun refrescarTabPersonal() {
-        MockBlindoRepository.getPersonalResult()
-            .onSuccess { todos ->
-                cachePersonal = todos
-                aplicarFiltroPersonal()
-            }
-            .onFailure { err ->
-                manejarErrorApi(err)
-            }
+        mostrarBarraSync(true)
+        try {
+            MockBlindoRepository.getPersonalResult()
+                .onSuccess { todos ->
+                    cachePersonal = todos
+                    aplicarFiltroPersonal()
+                }
+                .onFailure { err ->
+                    manejarErrorApi(err)
+                }
+        } finally {
+            mostrarBarraSync(false)
+        }
     }
 
     // Filtra la lista de personal en memoria sin volver a consultar la red
@@ -452,14 +514,19 @@ class MainActivity : AppCompatActivity() {
 
     // Descarga las asignaciones de EPP desde Laravel y aplica búsqueda + filtro de caducidad
     private suspend fun refrescarTabInventario() {
-        MockBlindoRepository.getAsignacionesConDetalleResult()
-            .onSuccess { todos ->
-                cacheInventario = todos
-                aplicarFiltroInventario()
-            }
-            .onFailure { err ->
-                manejarErrorApi(err)
-            }
+        mostrarBarraSync(true)
+        try {
+            MockBlindoRepository.getAsignacionesConDetalleResult()
+                .onSuccess { todos ->
+                    cacheInventario = todos
+                    aplicarFiltroInventario()
+                }
+                .onFailure { err ->
+                    manejarErrorApi(err)
+                }
+        } finally {
+            mostrarBarraSync(false)
+        }
     }
 
     // Filtra el inventario de EPP en memoria según búsqueda y estado (Caducados, Alerta, Vigentes)
@@ -513,7 +580,7 @@ class MainActivity : AppCompatActivity() {
                     MockBlindoRepository.actualizarOrdenNotas(orden.id, nuevasNotas)
                         .onSuccess {
                             updateDashboardYBitacora()
-                            Snackbar.make(binding.root, "Notas actualizadas en servidor", Snackbar.LENGTH_SHORT).show()
+                            BlindoNotice.exito(this@MainActivity, "Notas guardadas", "Las observaciones de la orden se actualizaron.")
                             dialog.dismiss()
                         }
                         .onFailure { err -> manejarErrorApi(err) }
@@ -568,12 +635,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             if (res == null) {
-                Toast.makeText(this@MainActivity, "Error al generar el PDF", Toast.LENGTH_SHORT).show()
+                BlindoNotice.error(this@MainActivity, "No se pudo crear el PDF", "Intenta abrir el documento nuevamente.")
                 return@launch
             }
             val (pdfFile, previewBitmap) = res
             if (previewBitmap == null) {
-                Toast.makeText(this@MainActivity, "No se pudo renderizar la vista previa", Toast.LENGTH_SHORT).show()
+                BlindoNotice.error(this@MainActivity, "Vista previa no disponible", "No se pudo mostrar la hoja del permiso.")
                 return@launch
             }
             PdfPreviewDialogHelper.mostrar(
@@ -630,7 +697,7 @@ class MainActivity : AppCompatActivity() {
     private fun mostrarFotoEvidenciaAmpliada(registro: RegistroAuditoria, fotoPath: String) {
         val bmp = android.graphics.BitmapFactory.decodeFile(fotoPath)
         if (bmp == null) {
-            Toast.makeText(this, "No se pudo cargar la foto de evidencia", Toast.LENGTH_SHORT).show()
+            BlindoNotice.alerta(this, "Foto no disponible", "No se pudo cargar la fotografía de evidencia.")
             return
         }
         PdfPreviewDialogHelper.mostrar(
@@ -646,21 +713,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmarFinalizarOrden(orden: OrdenActiva) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Finalizar orden en piso")
-            .setMessage("¿Confirmas que '${orden.nombreTrabajo}' (${orden.trabajador}) concluyó y puede retirarse de ${orden.zona}?")
-            .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Finalizar") { _, _ ->
-                lifecycleScope.launch {
-                    MockBlindoRepository.finalizarOrden(orden.id)
-                        .onSuccess {
-                            updateDashboardYBitacora()
-                            Snackbar.make(binding.root, "Orden finalizada y archivada en Bitácora", Snackbar.LENGTH_SHORT).show()
-                        }
-                        .onFailure { err -> manejarErrorApi(err) }
-                }
+        BlindoConfirmDialog.mostrar(
+            activity = this,
+            titulo = "Finalizar orden en piso",
+            mensaje = "¿Confirmas que '${orden.nombreTrabajo}' (${orden.trabajador}) concluyó y puede retirarse de ${orden.zona}?",
+            textoConfirmar = "Finalizar",
+            estilo = BlindoConfirmDialog.Estilo.EXITO,
+            iconoRes = R.drawable.ic_check_circle
+        ) { cerrarDialogo ->
+            lifecycleScope.launch {
+                MockBlindoRepository.finalizarOrden(orden.id)
+                    .onSuccess {
+                        updateDashboardYBitacora()
+                        cerrarDialogo()
+                        BlindoNotice.exito(this@MainActivity, "Orden finalizada", "El registro quedó archivado en Bitácora.")
+                    }
+                    .onFailure { err ->
+                        cerrarDialogo()
+                        manejarErrorApi(err)
+                    }
             }
-            .show()
+        }
     }
 
     private fun mostrarFichaPersonalModal(personal: Personal) {
@@ -720,6 +793,8 @@ class MainActivity : AppCompatActivity() {
         val btnGuardar = view.findViewById<MaterialButton>(R.id.btnGuardarPersonalModal)
 
         tvTitulo.text = "Editar personal"
+        InputValidators.aplicarFiltroSoloNombre(etNombre)
+        InputValidators.aplicarFiltroCodigoEmpleado(etNum)
         etNombre.setText(personal.nombre)
         etNum.setText(personal.numeroEmpleado)
         toggleRol.check(if (personal.rol == "SUPERVISOR") R.id.btnRolSupModal else R.id.btnRolOpModal)
@@ -728,6 +803,17 @@ class MainActivity : AppCompatActivity() {
             val nuevoNombre = etNombre.text.toString().trim()
             val nuevoNum = etNum.text.toString().trim()
             val nuevoRol = if (toggleRol.checkedButtonId == R.id.btnRolSupModal) "SUPERVISOR" else "OPERADOR"
+
+            InputValidators.validarNombrePersona(nuevoNombre)?.let { errMsg ->
+                etNombre.error = errMsg
+                BlindoNotice.alerta(this, "Nombre inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
+            InputValidators.validarNumeroEmpleado(nuevoNum)?.let { errMsg ->
+                etNum.error = errMsg
+                BlindoNotice.alerta(this, "Código inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
 
             btnGuardar.isEnabled = false
             lifecycleScope.launch {
@@ -739,15 +825,17 @@ class MainActivity : AppCompatActivity() {
                 res.onSuccess {
                     refrescarTabPersonal()
                     refrescarTabInventario()
-                    Snackbar.make(binding.root, "Trabajador actualizado: $nuevoNombre", Snackbar.LENGTH_SHORT).show()
+                    BlindoNotice.exito(this@MainActivity, "Datos actualizados", "Se guardaron los cambios de $nuevoNombre.")
                     dialog.dismiss()
                 }.onFailure { err ->
                     val apiErr = err as? ApiException
                     if (apiErr != null && apiErr.statusCode == 422) {
                         apiErr.fieldErrors["nombre"]?.let { etNombre.error = it }
                         apiErr.fieldErrors["numero_empleado"]?.let { etNum.error = it }
+                        BlindoNotice.alerta(this@MainActivity, "Revisa los datos", apiErr.message, window = dialog.window)
+                    } else {
+                        BlindoNotice.error(this@MainActivity, "No se pudo actualizar", err.message ?: "Intenta nuevamente.", window = dialog.window)
                     }
-                    Toast.makeText(this@MainActivity, err.message ?: "No se pudo actualizar", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -756,22 +844,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmarEliminarPersonal(personal: Personal) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Eliminar trabajador")
-            .setMessage("¿Seguro que deseas eliminar a ${personal.nombre} (${personal.numeroEmpleado}) de la base de datos? También se borrarán sus asignaciones de EPP.")
-            .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Eliminar") { _, _ ->
-                lifecycleScope.launch {
-                    MockBlindoRepository.eliminarPersonal(personal.id)
-                        .onSuccess {
-                            refrescarTabPersonal()
-                            refrescarTabInventario()
-                            Snackbar.make(binding.root, "${personal.nombre} eliminado", Snackbar.LENGTH_SHORT).show()
-                        }
-                        .onFailure { err -> manejarErrorApi(err) }
-                }
+        BlindoConfirmDialog.mostrar(
+            activity = this,
+            titulo = "Eliminar trabajador",
+            mensaje = "¿Seguro que deseas retirar a ${personal.nombre} (${personal.numeroEmpleado}) de la plantilla? También se eliminarán sus asignaciones de EPP.",
+            textoConfirmar = "Eliminar",
+            estilo = BlindoConfirmDialog.Estilo.PELIGRO,
+            iconoRes = R.drawable.ic_block
+        ) { cerrarDialogo ->
+            lifecycleScope.launch {
+                MockBlindoRepository.eliminarPersonal(personal.id)
+                    .onSuccess {
+                        refrescarTabPersonal()
+                        refrescarTabInventario()
+                        cerrarDialogo()
+                        BlindoNotice.exito(this@MainActivity, "Trabajador eliminado", "${personal.nombre} fue retirado de la plantilla.")
+                    }
+                    .onFailure { err ->
+                        cerrarDialogo()
+                        manejarErrorApi(err)
+                    }
             }
-            .show()
+        }
     }
 
     private fun mostrarDialogAsignarEpp(trabajadorPreseleccionadoId: Int? = null) {
@@ -782,7 +876,7 @@ class MainActivity : AppCompatActivity() {
                 return@launch
             }
             if (personal.isEmpty()) {
-                Toast.makeText(this@MainActivity, "Primero registra al menos un trabajador en la pestaña Personal", Toast.LENGTH_LONG).show()
+                BlindoNotice.alerta(this@MainActivity, "Sin personal registrado", "Primero registra al menos un trabajador en la pestaña Personal.")
                 return@launch
             }
             val eppsOrdenados = MockBlindoRepository.getEppsGlobales().sortedBy { it.nombre }
@@ -880,11 +974,14 @@ class MainActivity : AppCompatActivity() {
                     9999
                 } else {
                     val cantidad = etVidaUtil.text.toString().trim().toIntOrNull() ?: 0
-                    if (cantidad <= 0) {
-                        Toast.makeText(this@MainActivity, "Ingresa una cantidad válida mayor a 0", Toast.LENGTH_SHORT).show()
+                    val esAnios = spinnerTipoTiempo.selectedItemPosition == 1
+                    val maxPermitido = if (esAnios) 10 else 120
+                    if (cantidad <= 0 || cantidad > maxPermitido) {
+                        val rangoTexto = if (esAnios) "entre 1 y 10 años" else "entre 1 y 120 meses"
+                        BlindoNotice.alerta(this@MainActivity, "Vigencia fuera de rango", "Ingresa una duración $rangoTexto.", window = dialog.window)
                         return@setOnClickListener
                     }
-                    if (spinnerTipoTiempo.selectedItemPosition == 1) cantidad * 12 else cantidad
+                    if (esAnios) cantidad * 12 else cantidad
                 }
 
                 btnConfirmar.isEnabled = false
@@ -899,15 +996,16 @@ class MainActivity : AppCompatActivity() {
 
                     res.onSuccess { actualizado ->
                         refrescarTabInventario()
+                        val titulo = if (actualizado) "EPP actualizado" else "EPP entregado"
                         val msg = if (actualizado) {
-                            "${epp.nombre} actualizado para ${trabajador.nombre}"
+                            "${epp.nombre} actualizado para ${trabajador.nombre}."
                         } else {
-                            "${epp.nombre} asignado a ${trabajador.nombre}"
+                            "${epp.nombre} asignado a ${trabajador.nombre}."
                         }
-                        Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
                         dialog.dismiss()
+                        BlindoNotice.exito(this@MainActivity, titulo, msg)
                     }.onFailure { err ->
-                        Toast.makeText(this@MainActivity, err.message ?: "Error al asignar EPP", Toast.LENGTH_LONG).show()
+                        BlindoNotice.error(this@MainActivity, "No se pudo asignar", err.message ?: "Intenta nuevamente.", window = dialog.window)
                     }
                 }
             }
@@ -964,11 +1062,14 @@ class MainActivity : AppCompatActivity() {
                 9999
             } else {
                 val cant = etVida.text.toString().trim().toIntOrNull() ?: 0
-                if (cant <= 0) {
-                    Toast.makeText(this, "Ingresa una cantidad válida mayor a 0", Toast.LENGTH_SHORT).show()
+                val esAnios = spinnerTiempo.selectedItemPosition == 1
+                val maxPermitido = if (esAnios) 10 else 120
+                if (cant <= 0 || cant > maxPermitido) {
+                    val rangoTexto = if (esAnios) "entre 1 y 10 años" else "entre 1 y 120 meses"
+                    BlindoNotice.alerta(this, "Vigencia fuera de rango", "Ingresa una duración $rangoTexto.", window = dialog.window)
                     return@setOnClickListener
                 }
-                if (spinnerTiempo.selectedItemPosition == 1) cant * 12 else cant
+                if (esAnios) cant * 12 else cant
             }
 
             btnGuardar.isEnabled = false
@@ -978,51 +1079,63 @@ class MainActivity : AppCompatActivity() {
 
                 res.onSuccess {
                     refrescarTabInventario()
-                    Snackbar.make(binding.root, "Vigencia actualizada en servidor", Snackbar.LENGTH_SHORT).show()
                     dialog.dismiss()
+                    BlindoNotice.exito(this@MainActivity, "Vigencia actualizada", "Se guardó la nueva vigencia de ${detalle.epp.nombre}.")
                 }.onFailure { err ->
-                    Toast.makeText(this@MainActivity, err.message ?: "Error al actualizar", Toast.LENGTH_LONG).show()
+                    BlindoNotice.error(this@MainActivity, "No se pudo actualizar", err.message ?: "Intenta nuevamente.", window = dialog.window)
                 }
             }
         }
 
         btnEliminar.setOnClickListener {
             dialog.dismiss()
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Eliminar asignación de EPP")
-                .setMessage("¿Eliminar '${detalle.epp.nombre}' del inventario de ${detalle.personal.nombre}?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Eliminar") { _, _ ->
-                    lifecycleScope.launch {
-                        MockBlindoRepository.eliminarAsignacionEpp(detalle.asignacion.id)
-                            .onSuccess {
-                                refrescarTabInventario()
-                                Snackbar.make(binding.root, "Asignación eliminada de servidor", Snackbar.LENGTH_SHORT).show()
-                            }
-                            .onFailure { err -> manejarErrorApi(err) }
-                    }
+            BlindoConfirmDialog.mostrar(
+                activity = this,
+                titulo = "Retirar equipo asignado",
+                mensaje = "¿Eliminar '${detalle.epp.nombre}' del inventario de ${detalle.personal.nombre}?",
+                textoConfirmar = "Eliminar",
+                estilo = BlindoConfirmDialog.Estilo.PELIGRO,
+                iconoRes = R.drawable.ic_block
+            ) { cerrarDialogo ->
+                lifecycleScope.launch {
+                    MockBlindoRepository.eliminarAsignacionEpp(detalle.asignacion.id)
+                        .onSuccess {
+                            refrescarTabInventario()
+                            cerrarDialogo()
+                            BlindoNotice.exito(this@MainActivity, "Equipo retirado", "${detalle.epp.nombre} se eliminó del inventario.")
+                        }
+                        .onFailure { err ->
+                            cerrarDialogo()
+                            manejarErrorApi(err)
+                        }
                 }
-                .show()
+            }
         }
 
         dialog.showExpanded()
     }
 
     private fun confirmarRenovarEpp(detalle: AsignacionEppDetalle) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Renovar equipo EPP")
-            .setMessage("¿Confirmas la entrega de un reemplazo nuevo de '${detalle.epp.nombre}' a ${detalle.personal.nombre}? Su vigencia reiniciará desde hoy.")
-            .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Confirmar") { _, _ ->
-                lifecycleScope.launch {
-                    MockBlindoRepository.renovarEquipo(detalle.asignacion)
-                        .onSuccess {
-                            refrescarTabInventario()
-                            Snackbar.make(binding.root, "Renovado en servidor: ${detalle.epp.nombre}", Snackbar.LENGTH_SHORT).show()
-                        }
-                        .onFailure { err -> manejarErrorApi(err) }
-                }
+        BlindoConfirmDialog.mostrar(
+            activity = this,
+            titulo = "Renovar equipo EPP",
+            mensaje = "¿Confirmas la entrega de un reemplazo nuevo de '${detalle.epp.nombre}' a ${detalle.personal.nombre}? Su vigencia reiniciará desde hoy.",
+            textoConfirmar = "Renovar",
+            estilo = BlindoConfirmDialog.Estilo.EXITO,
+            iconoRes = R.drawable.ic_check_circle
+        ) { cerrarDialogo ->
+            lifecycleScope.launch {
+                MockBlindoRepository.renovarEquipo(detalle.asignacion)
+                    .onSuccess {
+                        refrescarTabInventario()
+                        cerrarDialogo()
+                        BlindoNotice.exito(this@MainActivity, "Equipo renovado", "${detalle.epp.nombre} reinició su vigencia desde hoy.")
+                    }
+                    .onFailure { err ->
+                        cerrarDialogo()
+                        manejarErrorApi(err)
+                    }
             }
-            .show()
+        }
     }
 }

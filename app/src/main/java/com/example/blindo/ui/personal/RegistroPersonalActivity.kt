@@ -15,6 +15,9 @@ import com.example.blindo.data.remote.ApiException
 import com.example.blindo.data.repository.MockBlindoRepository
 import com.example.blindo.databinding.ActivityRegistroPersonalBinding
 import com.example.blindo.databinding.DialogDetallePersonalBinding
+import com.example.blindo.ui.BlindoConfirmDialog
+import com.example.blindo.ui.BlindoNotice
+import com.example.blindo.ui.InputValidators
 import com.example.blindo.ui.showExpanded
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -45,6 +48,9 @@ class RegistroPersonalActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+        // Bloquea números en el nombre y caracteres inválidos en No. de Empleado al escribir
+        InputValidators.aplicarFiltroSoloNombre(binding.etNombrePersonal)
+        InputValidators.aplicarFiltroCodigoEmpleado(binding.etNumEmpleado)
         setupRecyclerView()
         setupListeners()
         setupFiltrosYBusqueda()
@@ -99,7 +105,7 @@ class RegistroPersonalActivity : AppCompatActivity() {
                     aplicarFiltroLocal()
                 }
                 .onFailure { err ->
-                    Snackbar.make(binding.root, err.message ?: "Error al cargar personal", Snackbar.LENGTH_LONG).show()
+                    BlindoNotice.error(this@RegistroPersonalActivity, "No se pudo cargar", err.message ?: "Verifica tu conexión e intenta de nuevo.")
                 }
         }
     }
@@ -127,6 +133,17 @@ class RegistroPersonalActivity : AppCompatActivity() {
             binding.etNombrePersonal.error = null
             binding.etNumEmpleado.error = null
 
+            InputValidators.validarNombrePersona(nombre)?.let { errMsg ->
+                binding.etNombrePersonal.error = errMsg
+                BlindoNotice.alerta(this, "Nombre inválido", errMsg)
+                return@setOnClickListener
+            }
+            InputValidators.validarNumeroEmpleado(numEmpleado)?.let { errMsg ->
+                binding.etNumEmpleado.error = errMsg
+                BlindoNotice.alerta(this, "Código inválido", errMsg)
+                return@setOnClickListener
+            }
+
             val rolSeleccionado = if (binding.toggleGroupRol.checkedButtonId == binding.btnRolSupervisor.id) {
                 "SUPERVISOR"
             } else {
@@ -143,15 +160,16 @@ class RegistroPersonalActivity : AppCompatActivity() {
                     binding.etNombrePersonal.text?.clear()
                     binding.etNumEmpleado.text?.clear()
                     actualizarLista()
-                    Snackbar.make(binding.root, "Registrado en servidor: ${nuevo.nombre}", Snackbar.LENGTH_SHORT).show()
+                    BlindoNotice.exito(this@RegistroPersonalActivity, "Personal registrado", "${nuevo.nombre} fue agregado a la plantilla.")
                 }.onFailure { err ->
                     val apiErr = err as? ApiException
                     if (apiErr != null && apiErr.statusCode == 422) {
-                        // Validación 422 directa de Laravel
                         apiErr.fieldErrors["nombre"]?.let { binding.etNombrePersonal.error = it }
                         apiErr.fieldErrors["numero_empleado"]?.let { binding.etNumEmpleado.error = it }
+                        BlindoNotice.alerta(this@RegistroPersonalActivity, "Revisa el formulario", apiErr.message)
+                    } else {
+                        BlindoNotice.error(this@RegistroPersonalActivity, "No se pudo registrar", err.message ?: "Intenta nuevamente.")
                     }
-                    Snackbar.make(binding.root, err.message ?: "No se pudo registrar", Snackbar.LENGTH_LONG).show()
                 }
             }
         }
@@ -203,6 +221,8 @@ class RegistroPersonalActivity : AppCompatActivity() {
         val btnGuardar = view.findViewById<MaterialButton>(R.id.btnGuardarPersonalModal)
 
         tvTitulo.text = "Editar personal"
+        InputValidators.aplicarFiltroSoloNombre(etNombre)
+        InputValidators.aplicarFiltroCodigoEmpleado(etNum)
         etNombre.setText(personal.nombre)
         etNum.setText(personal.numeroEmpleado)
         toggleRol.check(if (personal.rol == "SUPERVISOR") R.id.btnRolSupModal else R.id.btnRolOpModal)
@@ -211,6 +231,17 @@ class RegistroPersonalActivity : AppCompatActivity() {
             val nuevoNombre = etNombre.text.toString().trim()
             val nuevoNum = etNum.text.toString().trim()
             val nuevoRol = if (toggleRol.checkedButtonId == R.id.btnRolSupModal) "SUPERVISOR" else "OPERADOR"
+
+            InputValidators.validarNombrePersona(nuevoNombre)?.let { errMsg ->
+                etNombre.error = errMsg
+                BlindoNotice.alerta(this, "Nombre inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
+            InputValidators.validarNumeroEmpleado(nuevoNum)?.let { errMsg ->
+                etNum.error = errMsg
+                BlindoNotice.alerta(this, "Código inválido", errMsg, window = dialog.window)
+                return@setOnClickListener
+            }
 
             btnGuardar.isEnabled = false
             lifecycleScope.launch {
@@ -221,15 +252,17 @@ class RegistroPersonalActivity : AppCompatActivity() {
 
                 res.onSuccess {
                     actualizarLista()
-                    Snackbar.make(binding.root, "Datos actualizados: $nuevoNombre", Snackbar.LENGTH_SHORT).show()
                     dialog.dismiss()
+                    BlindoNotice.exito(this@RegistroPersonalActivity, "Datos actualizados", "Se guardaron los cambios de $nuevoNombre.")
                 }.onFailure { err ->
                     val apiErr = err as? ApiException
                     if (apiErr != null && apiErr.statusCode == 422) {
                         apiErr.fieldErrors["nombre"]?.let { etNombre.error = it }
                         apiErr.fieldErrors["numero_empleado"]?.let { etNum.error = it }
+                        BlindoNotice.alerta(this@RegistroPersonalActivity, "Revisa los datos", apiErr.message, window = dialog.window)
+                    } else {
+                        BlindoNotice.error(this@RegistroPersonalActivity, "No se pudo actualizar", err.message ?: "Intenta nuevamente.", window = dialog.window)
                     }
-                    Toast.makeText(this@RegistroPersonalActivity, err.message ?: "Error al actualizar", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -238,22 +271,26 @@ class RegistroPersonalActivity : AppCompatActivity() {
     }
 
     private fun confirmarEliminarPersonal(personal: Personal) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Eliminar trabajador")
-            .setMessage("¿Eliminar a ${personal.nombre} (${personal.numeroEmpleado}) de la base de datos? También se eliminarán sus asignaciones de EPP.")
-            .setNegativeButton("Cancelar", null)
-            .setPositiveButton("Eliminar") { _, _ ->
-                lifecycleScope.launch {
-                    MockBlindoRepository.eliminarPersonal(personal.id)
-                        .onSuccess {
-                            actualizarLista()
-                            Snackbar.make(binding.root, "${personal.nombre} eliminado", Snackbar.LENGTH_SHORT).show()
-                        }
-                        .onFailure { err ->
-                            Snackbar.make(binding.root, err.message ?: "Error al eliminar", Snackbar.LENGTH_LONG).show()
-                        }
-                }
+        BlindoConfirmDialog.mostrar(
+            activity = this,
+            titulo = "Eliminar trabajador",
+            mensaje = "¿Seguro que deseas retirar a ${personal.nombre} (${personal.numeroEmpleado}) de la plantilla? También se eliminarán sus asignaciones de EPP.",
+            textoConfirmar = "Eliminar",
+            estilo = BlindoConfirmDialog.Estilo.PELIGRO,
+            iconoRes = R.drawable.ic_block
+        ) { cerrarDialogo ->
+            lifecycleScope.launch {
+                MockBlindoRepository.eliminarPersonal(personal.id)
+                    .onSuccess {
+                        actualizarLista()
+                        cerrarDialogo()
+                        BlindoNotice.exito(this@RegistroPersonalActivity, "Trabajador eliminado", "${personal.nombre} fue retirado de la plantilla.")
+                    }
+                    .onFailure { err ->
+                        cerrarDialogo()
+                        BlindoNotice.error(this@RegistroPersonalActivity, "No se pudo eliminar", err.message ?: "Intenta nuevamente.")
+                    }
             }
-            .show()
+        }
     }
 }

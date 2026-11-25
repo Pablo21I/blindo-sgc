@@ -74,13 +74,22 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="0dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="14dp"
+            android:layout_marginEnd="6dp"
             android:text="Renovar"
             android:textAllCaps="false"
             android:textSize="12sp"
             android:textColor="@color/industrial_accent_glow"
             app:strokeColor="@color/industrial_accent"
             app:cornerRadius="10dp"/>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/industrial_text_muted"
+            android:contentDescription="Editar vigencia" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -55,18 +55,18 @@ object ApiErrorParser {
         }
 
         val friendlyMessage = when (code) {
-            401 -> serverMessage ?: "Credenciales incorrectas o sesión expirada (401)."
-            403 -> serverMessage ?: "No tienes permisos para realizar esta acción (403)."
-            404 -> "Registro no encontrado en el servidor (404)."
+            401 -> serverMessage ?: "Credenciales incorrectas o tu sesión expiró."
+            403 -> serverMessage ?: "No tienes permisos para realizar esta acción."
+            404 -> "No se encontró el registro solicitado."
             422 -> {
                 if (fieldErrors.isNotEmpty()) {
                     fieldErrors.values.joinToString("\n")
                 } else {
-                    serverMessage ?: "Faltan datos obligatorios o tienen formato inválido (422)."
+                    serverMessage ?: "Revisa los campos marcados; faltan datos obligatorios."
                 }
             }
-            in 500..599 -> "El servidor Laravel presentó un error interno ($code). Intenta de nuevo."
-            else -> serverMessage ?: "Error inesperado del servidor (HTTP $code)."
+            in 500..599 -> "No pudimos completar tu solicitud en este momento. Intenta de nuevo."
+            else -> serverMessage ?: "Ocurrió un problema inesperado. Intenta nuevamente."
         }
 
         return ApiException(code, friendlyMessage, fieldErrors)
@@ -77,13 +77,13 @@ object ApiErrorParser {
         if (e is ApiException) return e
         val msg = when (e) {
             is ConnectException, is UnknownHostException ->
-                "No se pudo conectar con el servidor. Verifica tu conexión a internet o que el servidor esté encendido."
+                "Sin conexión con el servicio. Verifica tu red e intenta de nuevo."
             is SocketTimeoutException ->
-                "El servidor tardó demasiado en responder. Revisa tu conexión."
+                "La conexión tardó demasiado en responder. Intenta de nuevo."
             is IOException ->
-                "Error de red: el servidor no está disponible en este momento."
+                "No hay conexión disponible en este momento."
             else ->
-                e.message ?: "Error inesperado de comunicación."
+                e.message ?: "Ocurrió un problema de comunicación."
         }
         return ApiException(statusCode = 0, message = msg)
     }
