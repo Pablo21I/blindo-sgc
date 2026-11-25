@@ -315,7 +315,8 @@ object PermisoPdfGenerator {
                 PdfRenderer(pfd).use { renderer ->
                     if (renderer.pageCount <= 0) return null
                     renderer.openPage(0).use { page ->
-                        val scale = 2
+                        // Renderizamos en alta resolución (3x) para que al hacer zoom se lea nítido en proyector
+                        val scale = 3
                         val bmp = Bitmap.createBitmap(page.width * scale, page.height * scale, Bitmap.Config.ARGB_8888)
                         bmp.eraseColor(Color.WHITE)
                         page.render(bmp, Rect(0, 0, bmp.width, bmp.height), null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)

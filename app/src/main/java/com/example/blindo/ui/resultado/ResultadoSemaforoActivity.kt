@@ -17,6 +17,7 @@ import com.example.blindo.data.session.EvidenciaStore
 import com.example.blindo.databinding.ActivityResultadoBinding
 import com.example.blindo.domain.DatosPermisoPdf
 import com.example.blindo.domain.PermisoPdfGenerator
+import com.example.blindo.ui.PdfPreviewDialogHelper
 import com.example.blindo.ui.showExpanded
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -193,22 +194,19 @@ class ResultadoSemaforoActivity : AppCompatActivity() {
             }
 
             val (pdfFile, previewBitmap) = resultado
-            val dialog = BottomSheetDialog(this@ResultadoSemaforoActivity)
-            val view = layoutInflater.inflate(R.layout.dialog_preview_pdf, null)
-            dialog.setContentView(view)
-
-            view.findViewById<TextView>(R.id.tvPdfFolioSub).text = "Folio ${datos.folio} · Listo para auditoría STPS"
-            val ivPreview = view.findViewById<ImageView>(R.id.ivPdfPreview)
-            if (previewBitmap != null) ivPreview.setImageBitmap(previewBitmap)
-
-            view.findViewById<MaterialButton>(R.id.btnCompartirPdf).setOnClickListener {
+            if (previewBitmap == null) {
+                Toast.makeText(this@ResultadoSemaforoActivity, "No se pudo renderizar la vista previa", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            PdfPreviewDialogHelper.mostrar(
+                activity = this@ResultadoSemaforoActivity,
+                titulo = "Permiso de Trabajo STPS",
+                subtitulo = "Folio ${datos.folio} · Listo para auditoría STPS",
+                bitmap = previewBitmap,
+                textoBotonPrincipal = "Compartir / Guardar PDF"
+            ) {
                 PermisoPdfGenerator.compartirPdf(this@ResultadoSemaforoActivity, pdfFile)
             }
-            view.findViewById<MaterialButton>(R.id.btnCerrarPdfPreview).setOnClickListener {
-                dialog.dismiss()
-            }
-
-            dialog.showExpanded()
         }
     }
 

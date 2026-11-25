@@ -31,6 +31,7 @@ import com.example.blindo.domain.DatosPermisoPdf
 import com.example.blindo.domain.EppDateUtils
 import com.example.blindo.domain.EstadoEpp
 import com.example.blindo.domain.PermisoPdfGenerator
+import com.example.blindo.ui.PdfPreviewDialogHelper
 import com.example.blindo.ui.historial.HistorialAdapter
 import com.example.blindo.ui.login.LoginActivity
 import com.example.blindo.ui.personal.PersonalAdapter
@@ -87,7 +88,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val nombreUsuario = SessionManager.getUserName(this)
-        binding.tvHeaderTitle.text = "Hola, $nombreUsuario"
+        // Mostramos los dos primeros nombres en el saludo para evitar que se corte con "..."
+        val saludoCorto = nombreUsuario.trim().split(Regex("\\s+")).take(2).joinToString(" ")
+        binding.tvHeaderTitle.text = "Hola, $saludoCorto"
 
         setupRecyclerViews()
         setupListeners()
@@ -569,21 +572,19 @@ class MainActivity : AppCompatActivity() {
                 return@launch
             }
             val (pdfFile, previewBitmap) = res
-            val previewDialog = BottomSheetDialog(this@MainActivity)
-            val view = layoutInflater.inflate(R.layout.dialog_preview_pdf, null)
-            previewDialog.setContentView(view)
-
-            view.findViewById<TextView>(R.id.tvPdfFolioSub).text = "Folio ${datos.folio} · Respaldo STPS"
-            val ivPreview = view.findViewById<ImageView>(R.id.ivPdfPreview)
-            if (previewBitmap != null) ivPreview.setImageBitmap(previewBitmap)
-
-            view.findViewById<MaterialButton>(R.id.btnCompartirPdf).setOnClickListener {
+            if (previewBitmap == null) {
+                Toast.makeText(this@MainActivity, "No se pudo renderizar la vista previa", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            PdfPreviewDialogHelper.mostrar(
+                activity = this@MainActivity,
+                titulo = "Permiso de Trabajo STPS",
+                subtitulo = "Folio ${datos.folio} · Respaldo STPS",
+                bitmap = previewBitmap,
+                textoBotonPrincipal = "Compartir / Guardar PDF"
+            ) {
                 PermisoPdfGenerator.compartirPdf(this@MainActivity, pdfFile)
             }
-            view.findViewById<MaterialButton>(R.id.btnCerrarPdfPreview).setOnClickListener {
-                previewDialog.dismiss()
-            }
-            previewDialog.showExpanded()
         }
     }
 
@@ -632,26 +633,16 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "No se pudo cargar la foto de evidencia", Toast.LENGTH_SHORT).show()
             return
         }
-        val dialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.dialog_preview_pdf, null)
-        dialog.setContentView(view)
-
-        view.findViewById<TextView>(R.id.tvPdfDialogTitulo).text = "Evidencia fotográfica"
-        view.findViewById<TextView>(R.id.tvPdfFolioSub).text =
-            "${registro.trabajo} · ${registro.trabajador}"
-        val ivPreview = view.findViewById<ImageView>(R.id.ivPdfPreview)
-        ivPreview.setImageBitmap(bmp)
-
-        val btnAccion = view.findViewById<MaterialButton>(R.id.btnCompartirPdf)
-        btnAccion.text = "Ver / Descargar PDF completo"
-        btnAccion.setOnClickListener {
+        PdfPreviewDialogHelper.mostrar(
+            activity = this,
+            titulo = "Evidencia fotográfica",
+            subtitulo = "${registro.trabajo} · ${registro.trabajador}",
+            bitmap = bmp,
+            textoBotonPrincipal = "Ver / Descargar PDF completo"
+        ) { dialog ->
             dialog.dismiss()
             abrirPdfDesdeBitacora(registro)
         }
-        view.findViewById<MaterialButton>(R.id.btnCerrarPdfPreview).setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.showExpanded()
     }
 
     private fun confirmarFinalizarOrden(orden: OrdenActiva) {

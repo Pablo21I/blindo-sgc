@@ -2,30 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@drawable/bg_bottom_sheet">
+    android:background="@color/industrial_bg"
+    android:fitsSystemWindows="true">
 
-    <View
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="14dp"
-        android:background="#33FFFFFF" />
-
+    <!-- Barra superior del visor a pantalla completa -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="12dp">
+        android:paddingHorizontal="18dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="10dp"
+        android:background="@color/industrial_card">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginEnd="10dp">
 
             <TextView
                 android:id="@+id/tvPdfDialogTitulo"
@@ -33,8 +31,10 @@
                 android:layout_height="wrap_content"
                 android:text="Permiso de Trabajo STPS"
                 android:textColor="@color/industrial_text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tvPdfFolioSub"
@@ -42,45 +42,134 @@
                 android:layout_height="wrap_content"
                 android:text="Documento PDF generado"
                 android:textColor="@color/industrial_text_secondary"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCerrarPdfPreview"
-            style="@style/Widget.Material3.Button.TextButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
+            android:minWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="14dp"
             android:text="Cerrar"
             android:textAllCaps="false"
-            android:textColor="@color/industrial_text_secondary" />
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_text_primary"
+            app:strokeColor="@color/industrial_border"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
-    <ScrollView
+    <!-- Barra de controles de zoom para lectura fácil en celular y proyector -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="440dp"
-        android:background="@color/industrial_bg"
-        android:padding="6dp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="8dp"
+        android:background="@color/industrial_surface_input">
 
-        <ImageView
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Doble toque o usa + / - para acercar"
+            android:textColor="@color/industrial_text_secondary"
+            android:textSize="11sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZoomOut"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp"
+            android:layout_height="32dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:text="−"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_text_primary"
+            app:strokeColor="@color/industrial_border"
+            app:cornerRadius="8dp" />
+
+        <TextView
+            android:id="@+id/tvZoomPorcentaje"
+            android:layout_width="54dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="100%"
+            android:textColor="@color/industrial_accent_glow"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZoomIn"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp"
+            android:layout_height="32dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:text="+"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/industrial_accent_glow"
+            app:strokeColor="@color/industrial_accent"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/industrial_border" />
+
+    <!-- Área principal con zoom interactivo y arrastre -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#050810"
+        android:padding="10dp">
+
+        <com.example.blindo.ui.ZoomableImageView
             android:id="@+id/ivPdfPreview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:layout_height="match_parent"
             android:contentDescription="Vista previa del Permiso STPS en PDF" />
-    </ScrollView>
+    </FrameLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCompartirPdf"
+    <!-- Acción inferior fija -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginTop="14dp"
-        android:text="Compartir / Guardar PDF"
-        android:textAllCaps="false"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        app:cornerRadius="14dp"
-        app:backgroundTint="@color/industrial_accent" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="12dp"
+        android:background="@color/industrial_card">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCompartirPdf"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Compartir / Guardar PDF"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/industrial_accent" />
+    </LinearLayout>
 
 </LinearLayout>
