@@ -482,7 +482,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
-                                        android:text="Se incrusta en el Permiso PDF STPS"
+                                        android:text="Opcional · Visible en Bitácora y Permiso PDF"
                                         android:textColor="@color/industrial_text_secondary"
                                         android:textSize="11sp"/>
                                 </LinearLayout>

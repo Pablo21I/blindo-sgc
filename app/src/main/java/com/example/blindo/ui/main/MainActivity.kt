@@ -175,6 +175,24 @@ class MainActivity : AppCompatActivity() {
             mostrarDialogAsignarEpp()
         }
 
+        // Atajos interactivos en los KPIs del panel principal para navegar con un toque
+        binding.kpiActivasContainer.setOnClickListener {
+            zonaFiltroSeleccionada = "Todas"
+            (binding.chipGroupZonas.getChildAt(0) as? Chip)?.isChecked = true
+            aplicarFiltroTaller()
+            Toast.makeText(this, "Mostrando todas las órdenes activas", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.kpiAlertasContainer.setOnClickListener {
+            binding.bottomNavigation.selectedItemId = R.id.nav_bitacora
+            binding.chipBitacoraAmarillo.isChecked = true
+        }
+
+        binding.kpiBloqueosContainer.setOnClickListener {
+            binding.bottomNavigation.selectedItemId = R.id.nav_bitacora
+            binding.chipBitacoraRojo.isChecked = true
+        }
+
         binding.btnLogout.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Cerrar sesión")

@@ -151,11 +151,16 @@
                         android:gravity="center_vertical">
 
                         <LinearLayout
+                            android:id="@+id/kpiActivasContainer"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:paddingVertical="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true">
                             <TextView
                                 android:id="@+id/tvActivosKpi"
                                 android:layout_width="wrap_content"
@@ -178,11 +183,16 @@
                             android:background="@color/industrial_divider"/>
 
                         <LinearLayout
+                            android:id="@+id/kpiAlertasContainer"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:paddingVertical="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true">
                             <TextView
                                 android:id="@+id/tvAlertasKpi"
                                 android:layout_width="wrap_content"
@@ -205,11 +215,16 @@
                             android:background="@color/industrial_divider"/>
 
                         <LinearLayout
+                            android:id="@+id/kpiBloqueosContainer"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:paddingVertical="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true">
                             <TextView
                                 android:id="@+id/tvBloqueosKpi"
                                 android:layout_width="wrap_content"
@@ -511,6 +526,7 @@
                     android:id="@+id/chipGroupEstadoEpp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="6dp"
                     app:singleSelection="true"
                     app:selectionRequired="true">
 
@@ -521,6 +537,7 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         app:chipBackgroundColor="@color/chip_bg_selector"
+                        android:textColor="@color/industrial_text_primary"
                         android:text="Todos"/>
 
                     <com.google.android.material.chip.Chip
@@ -639,6 +656,7 @@
                     android:id="@+id/chipGroupEstadoBitacora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="6dp"
                     app:singleSelection="true"
                     app:selectionRequired="true">
 
@@ -649,6 +667,7 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         app:chipBackgroundColor="@color/chip_bg_selector"
+                        android:textColor="@color/industrial_text_primary"
                         android:text="Todos"/>
 
                     <com.google.android.material.chip.Chip
